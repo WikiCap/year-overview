@@ -105,7 +105,8 @@ uvicorn backend.app:app --reload
 
 ### Run Locally
 
-**The server will run at**
+**The server will run at:**
+
 `http://127.0.0.1:8000/`
 
 ---
