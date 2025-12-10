@@ -50,11 +50,11 @@ The results are presented in an artsy, interactive timeline.
 
 1. **Create and activate your Virtual Environment**
 
-   ### MacOS / Linux
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
+### MacOS / Linux
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
 
 ### **Windows**
@@ -76,18 +76,18 @@ python -m venv .venv .venv\Scripts\activate
    ```
 
 
-4.### **Create your .env file in the projects root**
+4. **Create your .env file in the projects root**
 
 ```
 env API_KEY_1=YOUR_KEY API_KEY_2=YOUR_KEY2
 ```
 
-5.### **Start Tailwind in development mode**
+5.**Start Tailwind in development mode**
 ```bash
 npm run dev
 ```
 
-6.### **Start the FastAPI server**
+6. **Start the FastAPI server**
 ```bash
 uvicorn backend.app:app --reload
 ```
