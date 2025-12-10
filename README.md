@@ -1,6 +1,6 @@
 # WikiCap
 
-WikiCap is a web application that lets you enter any year and fetch nostalgic data such as news, top music and popular movies.  
+WikiCap is a web application that lets you enter any year and fetch nostalgic data such as news, top music and popular movies.
 The results are presented in an artsy, interactive timeline.
 
 ---
@@ -47,6 +47,39 @@ The results are presented in an artsy, interactive timeline.
     ```
 ### Requirements
 ### Installation
+
+1. **Create and activate your Virtual enviroment**
+  ### **MacOS / Linux **
+```bash
+python3 -m venv .venv source .venv/bin/activate ```
+
+### **Windows**
+
+```bash
+python -m venv .venv .venv\Scripts\activate ```
+
+
+2. ### **Install backend dependencies**
+ ```bash
+ pip install -r requirements.txt```
+
+3.### **Install frontend dependencies**
+```bash cd frontend
+   npm install```
+
+
+4.### **Create your .env file in the projects root**
+```env API_KEY_1=YOUR_KEY API_KEY_2=YOUR_KEY2```
+
+5.### **Start Tailwind in development mode**
+```bash
+npm run dev```
+
+6.### **Start the FastAPI server**
+```bash
+uvicorn backend.app:app --reload```
+
+
 ### Run Locally
 
 ---
