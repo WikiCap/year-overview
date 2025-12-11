@@ -56,11 +56,12 @@ The results are presented in an artsy, interactive timeline.
 
 1. **Create and activate your Virtual Environment**
 
+
 ### MacOS / Linux
 
 ```bash
 python -m venv .venv
-.venv\bin\activate
+.venv/bin/activate
 
 ```
 
