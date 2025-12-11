@@ -60,7 +60,7 @@ The results are presented in an artsy, interactive timeline.
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate
+.venv\bin\activate
 
 ```
 
