@@ -69,7 +69,7 @@ source.venv\bin\activate
 ### **Windows**
 
 ```bash
-python -m venv .venv .venv\Scripts\activate
+python3 -m venv .venv .venv\Scripts\activate
 ```
 
 2. ### **Install backend dependencies**
