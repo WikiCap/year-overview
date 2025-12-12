@@ -24,6 +24,7 @@ The results are presented in an artsy, interactive timeline.
 **Backend**
 
 - Python – FastAPI (API layer / data aggregation)
+- Node.js - For tailwind
 
 **Frontend**
 
@@ -58,15 +59,17 @@ The results are presented in an artsy, interactive timeline.
 
 ### MacOS / Linux
 
+
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate
+source.venv\bin\activate
+
 ```
 
 ### **Windows**
 
 ```bash
-python -m venv .venv .venv\Scripts\activate
+python3 -m venv .venv .venv\Scripts\activate
 ```
 
 2. ### **Install backend dependencies**
@@ -75,7 +78,8 @@ python -m venv .venv .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-3.### **Install frontend dependencies**
+3.**Install frontend dependencies**
+Its important to note that npm install needs to be run inside of "frontend"
 
 ```bash
    cd frontend
@@ -84,12 +88,17 @@ pip install -r requirements.txt
 
 4. **Create your .env file in the projects root**
 
-```bash
-python create_env.py
-API_KEY_1=YOUR_KEY API_KEY_2=YOUR_KEY2
-```
+Create your .env in the root of the project
+
+Example input = API_KEY_1=YOUR_KEY API_KEY_2=YOUR_KEY2
 
 5.**Start Tailwind in development mode**
+-Please note that .venv needs to be deactivated.
+-This is done by running
+
+```bash
+deactivate
+```
 
 ```bash
 npm run dev
