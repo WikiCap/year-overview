@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>test</title>
+    <link rel="stylesheet" href="../backend/static/output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="min-h-screen bg-slate-950 bg-[radial-gradient(circle_at_top,#1f2937_0,#020617_45%,#000_100%)] text-slate-50 flex items-center justify-center px-4">
+    <main class="min-h-screen grid grid-rows-[auto_auto_1fr] w-full max-w-xl text-center space-y-8 py-16 gap-16">
+      <header class="space-y-2">
+        <h1 class="flex items-center justify-center gap-3 text-4xl md:text-5xl font-semibold tracking-tight uppercase">
+          <img src="https://img.icons8.com/?size=100&id=dVEppTrrsCZx&format=png&color=000000" alt="WikiCap icon" class="w-8 h-8 md:w-10 md:h-10" />
+          WikiCap
+        </h1>
+
+        <p class="text-slate-300 text-sm md:text-base">Detta är ett test bara för att se att tailwind fungerar :P</p>
+      </header>
+
+      <form class="flex flex-col sm:flex-row gap-3 justify-center">
+        <input
+          type="text"
+          name="year"
+          placeholder="Till exempel 1997"
+          class="w-full sm:w-48 bg-slate-900/80 border border-slate-700/80 rounded-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-slate-500"
+        />
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium bg-indigo-500 hover:bg-indigo-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-slate-950"
+        >
+          Hämta år
+        </button>
+      </form>
+      <p class="italic text-slate-400 text-4xl">Det här året minns vi...</h2>
+      <div class="flex flex-col justify-start items-center flex-nowrap gap-16">
+        <div class="flex flex-col rounded-2xl w-96 bg-[#420b81ad] shadow-wikicap border-l-4 border-cyan-400 pl-6 ">
+          <figure class="flex justify-center items-center rounded-2xl">
+            <h2 class="font-playfair text-3xl font-extrabold text-[#ffffffb8]">Top 10 Filmer</h2>
+          </figure>
+
+          <div class="flex flex-col p-8">
+            <div class="text-3xl font-bold text-[#ffffffb8] pb-6">Generator</div>
+            <div class="text-lg text-[#ffffffb8]">Leverage a graphical editor to create, design and customize beautiful web components.</div>
+            <div class="flex justify-end pt-6"></div>
+          </div>
+        </div>
+
+        <div class="flex flex-col rounded-2xl w-96 bg-[#420b81ad] shadow-wikicap border-l-4 border-indigo-400 pl-6">
+          <figure class="flex justify-center items-center rounded-2xl">
+            <h2 class="font-playfair text-3xl font-extrabold text-[#ffffffb8]">Top 10 Filmer</h2>
+          </figure>
+
+          <div class="flex flex-col p-8">
+            <div class="text-3xl font-bold text-[#ffffffb8] pb-6">Generator</div>
+            <div class="text-lg text-[#ffffffb8]">Leverage a graphical editor to create, design and customize beautiful web components.</div>
+            <div class="flex justify-end pt-6"></div>
+          </div>
+        </div>
+
+        <div class="flex flex-col rounded-2xl w-96 bg-[#420b81ad] shadow-wikicap">
+          <figure class="flex justify-center items-center rounded-2xl">
+            <h2 class="font-playfair text-3xl font-extrabold text-[#ffffffb8]">Top 10 Filmer</h2>
+          </figure>
+
+          <div class="flex flex-col p-8">
+            <div class="text-3xl font-bold text-[#ffffffb8] pb-6">Generator</div>
+            <div class="text-lg text-[#ffffffb8]">Leverage a graphical editor to create, design and customize beautiful web components.</div>
+            <div class="flex justify-end pt-6"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
