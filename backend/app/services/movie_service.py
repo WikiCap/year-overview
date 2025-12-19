@@ -7,7 +7,7 @@ def fetch_movies_for_year(year: int):
     for item in raw.get("results", [])[:10]:
         movies.append({
             "title": item["title"],
-            "rating": item["vote_average"],
+            "rating": round(item["vote_average"], 1),
             "poster": item["poster_path"],
             "releaseDate": item["release_date"]
         })

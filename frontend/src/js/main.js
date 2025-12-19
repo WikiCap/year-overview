@@ -1,3 +1,5 @@
+import { renderMovies } from "../components/MoviesSection.js";
+
 document.body.classList.add(
   "min-h-screen",
   "bg-slate-950",
@@ -33,11 +35,12 @@ app.innerHTML = `
     </button>
   </form>
 
-  <div> </div>
+  <div id="movieSection"></div>
 
 `;
 
 document.getElementById("searchForm").addEventListener("submit", getMovies);
+
 
 const baseURL = "http://localhost:8000/api/v1";
 
@@ -46,7 +49,7 @@ async function getMovies(event) {
   const year = document.getElementById("year").value;
   const URL = `${baseURL}/year/${year}`
 
-  options = {
+  const options = {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -54,7 +57,8 @@ async function getMovies(event) {
     }
 
     const response = await fetch(URL, options);
-    const movies = await response.json();
-    console.log(movies);
+    const data = await response.json();
+    console.log(data);
+    document.getElementById("movieSection").innerHTML = renderMovies(data.movies.topMovies);
 
 }
