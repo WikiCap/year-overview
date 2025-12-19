@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 router = APIRouter()
 
 # from app.services.music_serivce import fetch_music_for_year
@@ -8,7 +8,8 @@ router = APIRouter()
 from app.services.movie_service import fetch_movies_for_year
 
 @router.get("/year/{year}")
-def get_year(year: int):
+def get_year(year: int, response: Response):
+    response.headers["access-control-allow-origin"] = "*"
     return {
         "year": year,
         "movies": fetch_movies_for_year(year),
