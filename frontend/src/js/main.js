@@ -62,3 +62,9 @@ async function getMovies(event) {
     document.getElementById("movieSection").innerHTML = renderMovies(data.movies.topMovies);
 
 }
+
+fetch("http://localhost:8000/api/v1/year/2000/artists")
+  .then(res => res.json())
+  .then(data => {
+    console.log(data);
+  });
