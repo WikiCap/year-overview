@@ -35,3 +35,7 @@ def get_year(year: int):
         "events_by_month": fetch_year_events(year)
     }
 
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="8000", port=8000)
+
