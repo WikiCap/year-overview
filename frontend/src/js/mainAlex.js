@@ -11,6 +11,64 @@ const recapHeader = document.querySelector("#recapHeader");
 const yearBadge = document.querySelector("#yearBadge");
 const submitBtn = document.querySelector("#submitBtn");
 
+const nobelSection = document.querySelector("#nobelSection");
+const nobelGrid = document.querySelector("#nobelGrid");
+const nobelTpl = document.querySelector("#nobelCardTpl");
+const statsEl = document.querySelector("#stats");
+
+
+  function clearNobel() {
+  if (nobelGrid) nobelGrid.innerHTML = "";
+  if (nobelSection) nobelSection.classList.add("hidden");
+  if (statsEl) statsEl.textContent = "";
+}
+
+  // Start of nobel prize winners fetch
+  async function fetchNobel(year) {
+    const res = await fetch(`${API_BASE}/api/year/${year}/nobel`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.results ?? [];
+  }
+
+  function renderNobel(nobelData) {
+    clearNobel();
+
+    if (!nobelData || !nobelTpl || !nobelGrid || !nobelSection) return;
+
+    const nobels = nobelData?.nobels ?? nobelData?.results ?? [];
+    if (!Array.isArray(nobels) || nobels.length === 0) return;
+
+    nobelSection.classList.remove("hidden");
+    if (statsEl) statsEl.textContent = `$(nobels.length) Nobel Prize winners found`;
+
+    for (const winner of nobels) {
+      const node = nobelTpl.content.firstElementChild.cloneNode(true);
+
+      const img = node.querySelector("img");
+      const nameEl = node.querySelector(".name");
+      const categoryEl = node.querySelector(".category");
+      const motivationEl = node.querySelector(".motivation");
+
+      nameEl.textContent = winner.name ?? "Unknown";
+      categoryEl.textContent = winner.category ?? "";
+      motivationEl.textContent = winner.motivation ?? "";
+
+      const imgUrl = winner.image_url || winner.image || "";
+      if (imgUrl) {
+        img.src = imgUrl;
+        img.alt = winner.name ? `Portrait of ${winner.name}` : "Portrait image";
+      } else {
+        img.src = "https://upload.wikimedia.org/wikipedia/commons/3/3a/Nobel_Prize.png";
+        img.alt = "Nobel Prize";
+      }
+
+      nobelGrid.appendChild(node);
+    }
+
+
+  }
+
 function setStatus(text, kind = "info") {
   statusEl.className = "text-center";
   statusEl.innerHTML = "";
@@ -99,11 +157,20 @@ form.addEventListener("submit", async (e) => {
     setStatus("Skriv ett giltigt år (t.ex. 1997).", "error");
     return;
   }
-
+  clearNobel();
   clearResults();
   setStatus("Hämtar data…", "loading");
   submitBtn.disabled = true;
   submitBtn.classList.add("opacity-70", "cursor-not-allowed");
+
+  try {
+    const nobelData = await fetchNobel(year);
+    renderNobel(nobelData);
+  } catch (err) {
+    console.error(err);
+    setStatus("Kunde inte hämta Nobel-data.", "error");
+    clearNobel();
+  }
 
   try {
     const data = await fetchYear(year);
@@ -137,13 +204,7 @@ form.addEventListener("submit", async (e) => {
     submitBtn.classList.remove("opacity-70", "cursor-not-allowed");
   }
 
-  // Start of nobel prize winners fetch
-  async function fetchNobel(year) {
-    const res = await fetch(`${API_BASE}/API/year/${year}/nobel`);
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.results ?? [];
-  }
-  
+
+
 });
 

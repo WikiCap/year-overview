@@ -36,3 +36,6 @@ def get_year(year: int):
         "events_by_month": fetch_year_events(year)
     }
 
+@app.get("/api/year/{year}/nobel")
+def year_nobel(year: int):
+    return get_nobel_prizes(year)
