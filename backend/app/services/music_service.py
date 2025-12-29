@@ -10,7 +10,7 @@ def fetch_songs_for_year(year: int):
     raw = get_songs_by_year(year, auth_header)
 
     songs = []
-    for item in raw.get("tracks", {}).get("items", [])[:10]:
+    for item in raw[:10]:
         songs.append({
             "title": item["name"],
             "artist": item["artists"][0]["name"],
