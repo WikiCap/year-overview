@@ -21,7 +21,6 @@ app.add_middleware(
 
 app.include_router(year_router, prefix="/api/v1")
 app.include_router(movies_router, prefix="/api/v1")
-
 @app.get("/")
 def read_root():
     return {

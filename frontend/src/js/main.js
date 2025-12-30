@@ -1,4 +1,4 @@
-import { renderMovies } from "../components/MoviesSection.js";
+import {renderMovies, renderSeries} from "../components/MediaSection.js";
 const app = document.getElementById("app")
 
 document.getElementById("searchForm").addEventListener("submit", getMovies);
@@ -19,5 +19,10 @@ async function getMovies(event) {
     const response = await fetch(URL, options);
     const data = await response.json();
     console.log(data);
-    document.getElementById("movieSection").innerHTML = renderMovies(data.movies.topMovies);
+
+    const sortedMovies = [...data.movies.topMovies].sort((a, b) => b.rating - a.rating);
+    document.getElementById("movieSection").innerHTML = renderMovies(sortedMovies);
+
+    const sortedSeries = [...data.series.topSeries].sort((a, b) => b.rating - a.rating);
+    document.getElementById("seriesSection").innerHTML = renderSeries(sortedSeries);
 }

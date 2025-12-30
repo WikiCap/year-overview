@@ -6,11 +6,13 @@ router = APIRouter()
 # from app.services.event_serivce import fetch_events_for_year
 
 from app.services.movie_service import fetch_movies_for_year
+from app.services.movie_service import fetch_series_for_year
 
 @router.get("/year/{year}")
 def get_year(year: int):
     return {
         "year": year,
         "movies": fetch_movies_for_year(year),
+        "series": fetch_series_for_year(year)
         # music, events, sports osv senare...
     }
