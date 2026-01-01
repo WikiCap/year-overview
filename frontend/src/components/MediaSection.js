@@ -8,8 +8,22 @@ function formatVotes(votes) {
   return votes;
 }
 
+export function renderHighlights(highlights) {
+    return `
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold">Awards & Honors</h2>
+    
+            <ul class="mt-4 space-y-2 text-slate-300">
+                <li> Best Picture: <strong>${highlights.oscars.bestPicture.title}</strong></li>
+                <li> Best Actor: ${highlights.oscars.bestActor.name}</li>
+                <li> Best Actress: ${highlights.oscars.bestActress.name}</li>
+            </ul>
+        </section>
+    `;
+}
+
 export function renderMovies(movies) {
-  return `
+    return `
     <section class="mt-12 space-y-4">
       <h2 class="text-2xl font-semibold">Top Movies</h2>
 
