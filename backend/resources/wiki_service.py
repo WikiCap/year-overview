@@ -1,6 +1,6 @@
 import httpx
 import re
-from .wiki_cleaner import CLEANER
+from backend.resources.wiki_cleaner import CLEANER
 
 MONTHS = re.compile(
     r"\n=+\s*(January|February|March|April|May|June|July|August|September|October|November|December)\s*=+\s*\n",

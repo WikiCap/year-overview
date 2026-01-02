@@ -7,9 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 # from app.api.v1.year import router as year_router
 # from app.api.v1.movies import router as movies_router
 
-from resources.wiki_service import fetch_year_events
-from resources.artist_of_the_year import get_artist_of_the_year
-from resources.hit_song_year import get_year_with_hit_songs
+from backend.resources.wiki_service import fetch_year_events
+from backend.resources.artist_of_the_year import get_artist_of_the_year
+from backend.resources.hit_song_year import get_year_with_hit_songs
 
 app = FastAPI()
 

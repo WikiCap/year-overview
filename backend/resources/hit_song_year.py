@@ -1,8 +1,13 @@
+from dotenv import load_dotenv
 import httpx 
 import os
-from resources.artist_of_the_year import get_artist_of_the_year
+from backend.resources.artist_of_the_year import get_artist_of_the_year
+from pathlib import Path
 
-URL = "http://ws.audioscrobbler.com/2.0/"
+env_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(env_path)
+
+URL = "https://ws.audioscrobbler.com/2.0/"
 LASTFM_API_KEY = os.getenv("LASTFM_API_KEY")
 
 
@@ -43,11 +48,11 @@ def get_artist(artist_name: str, limit: int=5) ->list[dict]:
     if results is None:
         return []
     
-    match_artist_name = results.get("match_artist_name") 
-    if match_artist_name is None:  
+    artistmatches = results.get("artistmatches") 
+    if artistmatches is None:  
         return []
     
-    artists = match_artist_name.get("artist")
+    artists = artistmatches.get("artist")
     if artists is None: 
         return []
     
@@ -84,37 +89,39 @@ def get_hit_song(artist: str, limit: int=5) -> list[dict]:
         "api_key": LASTFM_API_KEY,
         "format": "json",
         "limit": limit,
+        "autocorrect": 1,
     }
         
     try:
         response = httpx.get(URL, params=params, timeout=15)
     except httpx.ReadTimeout:
         return []
+    
+    print("STATUS:", response.status_code)
+    print("URL:", response.url)
+    print("RAW RESPONSE:", response.text[:500])
         
     if response.status_code != 200:
         return []
         
-
-    hit_song_data = response.json()
-
-    list_of_hit_songs = []
+    data = response.json()
         
-    toptracks = hit_song_data.get("toptracks")
-    if toptracks is None: 
+    toptracks = data.get("toptracks")
+    if not toptracks:
         return []
             
     tracks = toptracks.get("track")
-    if tracks is None: 
+    if not tracks:
         return []
-            
-    for song in tracks:
-        title = song.get("name")
-        if title is None: 
-            continue 
+    
+    if isinstance(tracks, dict):
+        tracks = [tracks]
         
-        list_of_hit_songs.append({"title": title}) 
-        
-    return list_of_hit_songs     
+    return [
+        {"title": track.get("name")}
+        for track in tracks
+        if track.get("name")
+    ]  
 
           
 def get_year_with_hit_songs(year: int, limit: int = 5) -> dict:

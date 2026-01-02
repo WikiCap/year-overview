@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup 
 import httpx, re
-from resources.wiki_service import HEADERS
+from backend.resources.wiki_service import HEADERS
 
 
 def get_artist_of_the_year(year: int) ->list[str]:
