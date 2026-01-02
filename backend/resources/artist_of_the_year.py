@@ -1,10 +1,19 @@
-from urllib import response
 from bs4 import BeautifulSoup 
 import httpx, re
 from resources.wiki_service import HEADERS
 
+
 def get_artist_of_the_year(year: int) ->list[str]:
-    #Listar alla Billboard Hot 100 #1 låtar för ett givet år. 
+    """
+    Retrives the top Billboard artists for a given year by using Wikipedia API.
+    Handles different URL structures for years before and after 2000. 
+    
+    :Args: year (int): The year for which Billboard hot 100 #1 artists to be retrieved.
+    
+    :Returns: 
+    List[str]: A list of artist names that had #1 hits on Billboard for the specified year.
+    If the page or table is not found,it returns an empty list.
+    """
     
     if year >=2000:
         url = (f"https://en.wikipedia.org/wiki/"

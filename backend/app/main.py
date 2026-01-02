@@ -8,7 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 # from app.api.v1.movies import router as movies_router
 
 from resources.wiki_service import fetch_year_events
-from resources.marinas_artister import get_artist_of_the_year
+from resources.artist_of_the_year import get_artist_of_the_year
+from resources.hit_song_year import get_year_with_hit_songs
 
 app = FastAPI()
 
@@ -42,6 +43,10 @@ def get_billboard_artists(year:int):
         "year": year,
         "top_artists": get_artist_of_the_year(year)
     }    
+    
+@app.get("/api/billboard/{year}/top-songs")
+def get_billboard_top_songs(year: int, limit: int=5):
+    return get_year_with_hit_songs(year, limit)    
 
 if __name__ == "__main__":
     import uvicorn
