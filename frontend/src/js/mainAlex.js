@@ -100,7 +100,7 @@ const observer = new IntersectionObserver(entries => {
         img.src = imgUrl;
         img.alt = `Portrait of ${winner.name}`;
       } else {
-        img.src = "https://upload.wikimedia.org/wikipedia/commons/3/3a/Nobel_Prize.png";
+        img.src = "https://upload.wikimedia.org/wikipedia/en/e/ed/Nobel_Prize.png";
         img.alt = "Nobel Prize Medal";
       }
       nobelGrid.appendChild(node);
