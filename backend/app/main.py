@@ -30,6 +30,7 @@ def read_root():
         "message": "WikiCap API is running!",
     }
 
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="8000", port=8000)
