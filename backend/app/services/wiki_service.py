@@ -1,6 +1,6 @@
 import re
-from app.clients.wiki_client import get_year_page_source
-from app.utils.wiki_cleaner import CLEANER
+from backend.app.clients.wiki_client import get_year_page_source
+from backend.app.utils.wiki_cleaner import CLEANER
 
 MONTHS = re.compile(
     r"\n=+\s*(January|February|March|April|May|June|July|August|September|October|November|December)\s*=+\s*\n",
