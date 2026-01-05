@@ -35,7 +35,4 @@ if __name__ == "__main__":
     uvicorn.run(app, host="8000", port=8000)
 
 
-@app.get("/api/year/{year}/nobel")
-def year_nobel(year: int):
-    return get_nobel_prizes(year)
 
