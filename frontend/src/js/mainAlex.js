@@ -17,8 +17,102 @@ const recapHeader = document.querySelector("#recapHeader");
 const yearBadge = document.querySelector("#yearBadge");
 const submitBtn = document.querySelector("#submitBtn");
 
-const MIN_YEAR = 1900;
-const MAX_YEAR = new Date().getFullYear();
+const nobelSection = document.querySelector("#nobelSection");
+const nobelGrid = document.querySelector("#nobelGrid");
+const nobelTpl = document.querySelector("#nobelCardTpl");
+const statsEl = document.querySelector("#stats");
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+
+    entry.target.classList.remove(
+      "opacity-0",
+      "blur-sm",
+      "-translate-x-10",
+      "translate-x-10"
+    );
+
+    entry.target.classList.add(
+      "opacity-100",
+      "blur-0",
+      "translate-x-0"
+    );
+
+    observer.unobserve(entry.target);
+  });
+},
+{  threshold: 0.15}
+
+    );
+
+  function clearNobel() {
+  if (nobelGrid) nobelGrid.innerHTML = "";
+  if (nobelSection) nobelSection.classList.add("hidden");
+  if (statsEl) statsEl.textContent = "";
+}
+
+  // Start of nobel prize winners fetch
+  async function fetchNobel(year) {
+    const res = await fetch(`${API_BASE}/api/year/${year}/nobel`);
+    if (!res.ok) return {};
+    const data = await res.json();
+    return data.nobel_prizes ?? {};
+  }
+
+  function renderNobel(nobelData) {
+    clearNobel();
+
+
+    if (!nobelData || !nobelTpl || !nobelGrid || !nobelSection) return;
+
+    const winners = Object.entries(nobelData).flatMap(
+      ([category, people]) =>
+        people.map(p => ({...p, category}))
+    );
+
+    if (winners.length === 0) return;
+
+    nobelSection.classList.remove("hidden");
+    if (statsEl) statsEl.textContent = `${winners.length} Nobel Prize winners found`;
+
+    winners.forEach((winner, index) => {
+      const node = nobelTpl.content.firstElementChild.cloneNode(true);
+
+
+      const isLeft = index % 2 === 0;
+      node.classList.add("reveal",
+        "opacity-0",
+        "transition-all",
+        "duration-700",
+        "ease-out",
+        "blur-sm",
+        isLeft ? "-translate-x-10" : "translate-x-10"
+      );
+
+      node.dataset.reveal = isLeft ? "left" : "right";
+
+      const img = node.querySelector("img");
+      const nameEl = node.querySelector(".name");
+      const categoryEl = node.querySelector(".category");
+      const motivationEl = node.querySelector(".motivation");
+
+      nameEl.textContent = winner.name ?? "Unknown";
+      categoryEl.textContent = winner.category ?? "Unknown Category";
+      motivationEl.textContent = winner.motivation ?? "";
+
+      const imgUrl = winner.image || "";
+      if (imgUrl) {
+        img.src = imgUrl;
+        img.alt = `Portrait of ${winner.name}`;
+      } else {
+        img.src = "https://upload.wikimedia.org/wikipedia/en/e/ed/Nobel_Prize.png";
+        img.alt = "Nobel Prize Medal";
+      }
+      nobelGrid.appendChild(node);
+      observer.observe(node);
+    });
+  }
 
 function setStatus(text, kind = "info") {
   statusEl.className = "text-center";
@@ -54,6 +148,45 @@ function clearResults() {
   yearBadge.textContent = "";
 }
 
+function renderMonthCard({ month, year, events, index }) {
+  const node = tpl.content.firstElementChild.cloneNode(true);
+
+  const isOdd = index % 2 === 0;
+  node.classList.add(isOdd ? "justify-start" : "justify-end");
+
+  const card = node.querySelector(".component-card");
+
+  card.classList.add("reveal",
+    "opacity-0",
+    "transition-all",
+    "duration-700",
+    "ease-out",
+    "blur-sm",
+    isOdd ? "-translate-x-10" : "translate-x-10"
+  );
+  card.style.transitionDelay = `${index * 80}ms`;
+  card.dataset.reveal = isOdd ? "left" : "right";
+
+  const title = node.querySelector(".monthTitle");
+  const chip = node.querySelector(".monthChip");
+  const list = node.querySelector(".monthList");
+
+  title.textContent = `${month} ${year}`;
+  title.classList.add(isOdd ? "text-cyan-200" : "text-purple-200");
+
+  chip.textContent = `${events.length} events`;
+
+  for (const e of events) {
+    const li = document.createElement("li");
+    li.textContent = `• ${e}`;
+    li.className = "leading-relaxed";
+    list.appendChild(li);
+  }
+
+  resultsEl.appendChild(node);
+  observer.observe(card);
+}
+
 async function fetchYear(year) {
   const url = `${API_BASE}/api/v1/year/${encodeURIComponent(year)}`;
 
@@ -66,12 +199,6 @@ async function fetchYear(year) {
   return await response.json();
 }
 
-if (!form || !input || !statusEl || !resultsEl || !wikiTpl || !recapHeader || !yearBadge || !submitBtn) {
-  console.error("Missing DOM element(s):", {
-    form, input, statusEl, resultsEl, tpl: wikiTpl, recapHeader, yearBadge, submitBtn
-  });
-  throw new Error("HTML is missing one or more IDs that the script requires.");
-}
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -83,11 +210,20 @@ form.addEventListener("submit", async (e) => {
     setStatus(`Skriv ett giltigt år (${MIN_YEAR}-${MAX_YEAR}).`, "error");
     return;
   }
-
+  clearNobel();
   clearResults();
   setStatus("Fetching data...", "loading");
   submitBtn.disabled = true;
   submitBtn.classList.add("opacity-70", "cursor-not-allowed");
+
+  try {
+    const nobelData = await fetchNobel(year);
+    renderNobel(nobelData);
+  } catch (err) {
+    console.error(err);
+    setStatus("Kunde inte hämta Nobel-data.", "error");
+    clearNobel();
+  }
 
   try {
     const data = await fetchYear(year);
@@ -104,31 +240,10 @@ form.addEventListener("submit", async (e) => {
     // Update hero text
     heroText.textContent = `The year was ${year}`;
 
-    // Show header badge
-    recapHeader.classList.remove("hidden");
-    recapHeader.classList.add("flex");
-    yearBadge.textContent = String(year);
 
-    // Render wiki events using the component
-    const wikiFragment = renderWikiSection(eventsByMonth, year, wikiTpl);
-    resultsEl.appendChild(wikiFragment);
-
-    // Render movie highlights
-    if (data.movie_highlights) {
-      highlightsSection.innerHTML = renderHighlights(data.movie_highlights);
-    }
-
-    // Render top movies
-    if (data.movies?.topMovies) {
-      const sortedMovies = [...data.movies.topMovies].sort((a, b) => b.rating - a.rating);
-      movieSection.innerHTML = renderMovies(sortedMovies);
-    }
-
-    // Render top series
-    if (data.series?.topSeries) {
-      const sortedSeries = [...data.series.topSeries].sort((a, b) => b.rating - a.rating);
-      seriesSection.innerHTML = renderSeries(sortedSeries);
-    }
+    entries.forEach(([month, events], i) => {
+      renderMonthCard({ month, year, events, index: i });
+    });
 
     setStatus("");
   } catch (err) {
@@ -138,5 +253,8 @@ form.addEventListener("submit", async (e) => {
     submitBtn.disabled = false;
     submitBtn.classList.remove("opacity-70", "cursor-not-allowed");
   }
+
+
+
 });
 

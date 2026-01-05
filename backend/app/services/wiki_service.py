@@ -2,94 +2,173 @@ import re
 from backend.app.clients.wiki_client import get_year_page_source
 from backend.app.utils.wiki_cleaner import CLEANER
 
-MONTHS = re.compile(
-    r"\n=+\s*(January|February|March|April|May|June|July|August|September|October|November|December)\s*=+\s*\n",
-)
 
 
-def strip_wiki_recap(text: str) -> str:
+WIKI_API = "https://en.wikipedia.org/w/api.php"
+
+HEADERS = {
+    "User-Agent": "WikiCap/1.0 (https://github.com/WikiCap/year-overview)"
+}
+
+MONTHS = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+]
+
+
+def normalize_toc(toc: dict) -> list[dict]:
     """
-    Removes all the text before the '== January ==' section in a Wikipedia year summary.
+    Function to normalize the TOC structure into a flat list of items
 
-    args:
-        text (str): The Wikipedia year summary text.
+    The Wikipedia API may return Data in nested dictionaries and lists.
+    This functions flattens the structure into a single list of items, for
+    easier processing.
 
-    returns:
-        str: The cleaned summary text starting from January.
+    Args:
+        toc (dict): The TOC data structure from the Wikipedia API.
+
+    Returns:
+        list[dict]: A flat list of TOC items.
     """
-    split_text = "== January =="
-    index = text.find(split_text)
-    return text[index:] if index != -1 else text
+    items = []
+
+    for value in toc.values():
+        if isinstance(value, list):
+            items.extend(value)
+        elif isinstance(value, dict):
+            items.append(value)
+
+    return items
+
+def fetch_year_toc(year: int) -> str:
+    """Fetch the TOC for a given year from Wikipedia.
+    This function uses the wikipedia API to fetch the TOC data for a specified year.
+
+    Args:
+        year (int): The year for which to fetch the TOC.
+
+    Returns:
+        list [dict]: The TOC data structure.
+        """
+    params = {
+        "action": "parse",
+        "page": str(year),
+        "prop": "tocdata",
+        "format": "json",
+        "formatversion": "2",
+    }
+    request_response = requests.get(WIKI_API, params=params, headers=HEADERS, timeout=20)
+    request_response.raise_for_status()
+
+    return request_response.json().get("parse", {}).get("tocdata", [])
 
 
-def split_by_months(text: str) -> dict:
+def get_month_sections(year: int) -> dict[str, str]:
     """
-    Splits the year summary text into a dictionary of months and their corresponding events.
+    Extract month section from a wikipedia year page
+    This function maps month names (Jan-Dec) to their corresponding section indices in the TOC data.
+    Args:
+        year (int): The year for which to extract month sections.
 
-    args:
-        text (str): The cleaned Wikipedia year summary text.
-
-    returns:
-        dict: A dictionary with month names as keys and event text as values.
+    Returns:
+        dict[str, str]: A dictionary mapping month names to their section indices.
     """
-    months = MONTHS.split(text)
+    toc = fetch_year_toc(year)
+    items = normalize_toc(toc)
 
-    month_dict = {}
+    months = {}
+    for item in items:
+        title = item.get("line", "")
+        index = item.get("index", "")
 
-    for month in range(1, len(months), 2):
-        month_name = months[month]
-        content = months[month + 1]
-        month_dict[month_name] = content.strip()
-
-    return month_dict
+        if title in MONTHS:
+            months[title] = index
 
 
-def extract_year_events(month_text: str, limit: int = 3) -> list:
+    return months
+
+def get_month_wikitext(year: int, month_index: str) -> str:
     """
-    Extracts a list of events from a month's text in the year summary.
+    Fetches raw wikitext from specific month section.
+    Uses the wikipedia API to retrive the unparsed wikitext
+    for a specific section, identified by month_index.
 
-    args:
-        month_text (str): The text for a specific month.
-        limit (int): The maximum number of events to extract.
+    Args:
+        year (int): The year of the Wikipedia page.
+        month_index (str): The section index for the month.
 
-    returns:
-        list: A list of extracted and cleaned events.
+    Returns:
+        str: The raw wikitext of the specified month section.
+    """
+    params = {
+        "action": "parse",
+        "page": str(year),
+        "prop": "wikitext",
+        "section": month_index,
+        "format": "json",
+        "formatversion": "2",
+    }
+
+    request_response = requests.get(WIKI_API, params=params, headers=HEADERS, timeout=20)
+    request_response.raise_for_status()
+
+    return request_response.json().get("parse", {}).get("wikitext", "")
+
+def extract_month_events(wikitext: str, limit: int = 6) -> list[str]:
+    """
+    Extracts and cleans event entries from month wikitext.
+
+    This function processes the raw wikitext of a month section,
+    identifies event lines, cleans them using the WikiCleaner,
+    and returns a list of cleaned event descriptions.
+
+    Args:
+        wikitext (str): The raw wikitext of the month section.
+        limit (int): Maximum number of events to extract.
+
+    Returns:
+        list[str]: A list of cleaned event descriptions.
+
+
     """
     events = []
 
-    for line in month_text.splitlines():
+    for line in wikitext.splitlines():
         if not line.startswith("*"):
             continue
 
-        clean = CLEANER.clean_event_line(line, max_len=200, keep_date_prefix=True)
-        if not clean:
-            continue
+        clean = CLEANER.clean_event_line(line, keep_date_prefix = False)
+        if clean:
+            events.append(clean)
 
-        events.append(clean)
         if len(events) >= limit:
             break
 
     return events
 
-
-def fetch_year_events(year: int) -> dict:
+def fetch_year_summary(year: int) -> str:
     """
-    Fetches and processes the year summary from Wikipedia to extract events by month.
+    Fetch a sumarized list of events for each month in a given year.
+    This functions data flow:
+    -fetch month sections from the TOC
+    - retrive month-specific wikitext
+    - extract and clean event lines
 
-    args:
-        year (int): The year for which to fetch events.
+    Args:
+        year (int): The year for which to fetch the summary.
 
-    returns:
-        dict: A dictionary with months as keys and lists of events as values.
-    """
-    text = get_year_page_source(year)
-    text = strip_wiki_recap(text)
+    Returns:
+        dict: A dictionary with month names as keys and lists of event descriptions as values."""
+    months = get_month_sections(year)
+    results = {}
 
-    months = split_by_months(text)
+    for month, index in months.items():
+        wikitext = get_month_wikitext(year, index)
+        events = extract_month_events(wikitext)
 
-    return {
-        month: extract_year_events(content, limit=6)
-        for month, content in months.items()
-        if content
-    }
+        if events:
+            results[month] = events
+
+    return results
+
 
