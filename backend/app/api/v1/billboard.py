@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from resources.artist_of_the_year import get_artist_of_the_year
-from resources.hit_song_year import get_year_with_hit_songs
+from app.services.artist_of_the_year import get_artist_of_the_year
+from app.services.hit_song_year import get_year_with_hit_songs
 
 router = APIRouter()
 

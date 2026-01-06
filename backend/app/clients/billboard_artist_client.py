@@ -1,17 +1,38 @@
+from bs4 import BeautifulSoup 
+import httpx
 from dotenv import load_dotenv
-import httpx 
 import os
-from backend.resources.artist_of_the_year import get_artist_of_the_year
 from pathlib import Path
 
-env_path = Path(__file__).resolve().parent / ".env"
-load_dotenv(env_path)
 
+HEADERS = {
+    "User-Agent": "WikiCap/1.0 (https://github.com/WikiCap/year-overview)"
+}
+
+def get_billboard_artist(year: int) ->list[str]:
+    
+    if year >=2000:
+        url = (f"https://en.wikipedia.org/wiki/"
+               f"List_of_Billboard_Hot_100_number-one_of_{year}"
+        )
+        table_class = "wikitable plainrowheaders top 3"
+    else: 
+        url = ( f"https://en.wikipedia.org/wiki/"
+                f"List_of_Billboard_Hot_100_number-one_singles_of_{year}"
+        )
+        table_class = "wikitable plainrowheaders"
+    
+    response = httpx.get(url, headers=HEADERS)
+    if response.status_code != 200:
+        return None, None
+    
+    return response, table_class
+    
 URL = "https://ws.audioscrobbler.com/2.0/"
 LASTFM_API_KEY = os.getenv("LASTFM_API_KEY")
 
 
-def get_artist(artist_name: str, limit: int=5) ->list[dict]:
+def get_artist_lastfm(artist_name: str, limit: int=5) ->list[dict]:
     """
     Search for artist by name using Last.fm API. 
     
@@ -122,42 +143,4 @@ def get_hit_song(artist: str, limit: int=5) -> list[dict]:
         for track in tracks
         if track.get("name")
     ]  
-
-          
-def get_year_with_hit_songs(year: int, limit: int = 5) -> dict:
-    """
-    Combines artists of a given year with their hit songs. 
     
-    Retrives artist for the specified year using get_artrist_of_the_year function.
-    Then feches each artist's top hit songs using get_hit_song function. 
-    
-    Args:
-        year (int): The year for which artists and songs to be retrieved.
-        limit (int): Maximum number of top songs to return for each artist. Defaults at 5.
-    
-    :Returns: 
-        dict: A dictionary containing the year, artist names and their top songs.
-    """   
-   
-    artists = get_artist_of_the_year(year)
-    
-    result = {
-        "year": year,
-        "artist": []
-    }  
-    
-    for artist in artists: 
-        top_songs = get_hit_song(artist, limit)    
-        
-        if not top_songs: 
-            continue  
-        
-        result["artist"].append({
-            "artist": artist, 
-            "toptracks": top_songs
-        })
-
-
-    return result   
-
-   
