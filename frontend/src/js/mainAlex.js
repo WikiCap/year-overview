@@ -175,7 +175,9 @@ function renderMonthCard({ month, year, events, index }) {
   const list = node.querySelector(".monthList");
 
   title.textContent = `${month} ${year}`;
-  title.classList.add(isOdd ? "text-cyan-200" : "text-purple-200");
+title.classList.add(
+  isOdd ? "text-[#ff5e00]" : "text-[#FF4F0F]"
+);
 
   chip.textContent = `${events.length} events`;
 

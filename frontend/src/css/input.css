@@ -36,13 +36,13 @@
 }
 
 
-@layer components {x1
+@layer components {
   .section-label {
     @apply text-xs tracking-widest uppercase text-slate-400;
   }
 
   .component-card {
-    @apply rounded-2xl border border-indigo-400/15 bg-slate-950/35 backdrop-blur-xl p-6;
+    @apply rounded-2xl border border-amber-400/15 bg-amber-950/35 backdrop-blur-xl p-6;
     box-shadow:
       0 0 0 1px rgba(99,102,241,.10),
       0 14px 50px rgba(0,0,0,.45),
@@ -50,7 +50,7 @@
   }
 
   .recap-card {
-    @apply rounded-2xl border border-indigo-400/20 bg-slate-950/40 backdrop-blur-xl p-6;
+    @apply rounded-2xl border border-amber-400/20 bg-amber-950/40 backdrop-blur-xl p-6;
     box-shadow:
       0 0 0 1px rgba(99,102,241,.12),
       0 16px 60px rgba(0,0,0,.50),
@@ -76,11 +76,12 @@
     font-size: clamp(2.25rem, 5vw, 3.75rem);
 
 
-    background: linear-gradient(90deg,
-      rgba(99,102,241,1) 0%,
-      rgba(59,130,246,1) 40%,
-      rgba(34,211,238,1) 100%
-    );
+background: linear-gradient(90deg,
+  #FF4F0F 0%,
+  #c95817 45%,
+  #FF4F0F 100%
+);
+
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -102,20 +103,22 @@
     border: none;
 
 
-    --c: no-repeat linear-gradient(
-      to bottom,
-      rgba(34,211,238,.8),
-      rgba(168,85,247,.9),
-      rgba(99,102,241,.9)
-    ) 50%;
+--c: no-repeat linear-gradient(
+  to bottom,
+  rgba(3,166,161,.85),
+  rgba(255,166,115,.9),
+  rgba(255,79,15,.95)
+) 50%;
+
 
     background:
       var(--c) calc(50% - 6px)/4px 16px,
       var(--c) calc(50% + 6px)/4px 16px;
 
-    filter:
-      drop-shadow(0 0 10px rgba(34,211,238,.35))
-      drop-shadow(0 0 18px rgba(168,85,247,.25));
+filter:
+  drop-shadow(0 0 10px rgba(3,166,161,.35))
+  drop-shadow(0 0 18px rgba(255,79,15,.35));
+;
   }
 
   .loader::before,
