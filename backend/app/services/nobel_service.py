@@ -1,4 +1,4 @@
-import requests
+import httpx as requests
 from resources.wiki_nobel_extractor import extract_nobel
 
 WIKI_API = "https://en.wikipedia.org/w/api.php"
