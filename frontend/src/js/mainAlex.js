@@ -34,11 +34,8 @@ const observer = new IntersectionObserver(entries => {
       "translate-x-10"
     );
 
-    entry.target.classList.add(
-      "opacity-100",
-      "blur-0",
-      "translate-x-0"
-    );
+    entry.target.classList.add("is-visible");
+
 
     observer.unobserve(entry.target);
   });
@@ -75,7 +72,6 @@ const observer = new IntersectionObserver(entries => {
     if (winners.length === 0) return;
 
     nobelSection.classList.remove("hidden");
-    if (statsEl) statsEl.textContent = `${winners.length} Nobel Prize winners found`;
 
     winners.forEach((winner, index) => {
       const node = nobelTpl.content.firstElementChild.cloneNode(true);
@@ -157,14 +153,8 @@ function renderMonthCard({ month, year, events, index }) {
 
   const card = node.querySelector(".component-card");
 
-  card.classList.add("reveal",
-    "opacity-0",
-    "transition-all",
-    "duration-700",
-    "ease-out",
-    "blur-sm",
-    isOdd ? "-translate-x-10" : "translate-x-10"
-  );
+  card.classList.add(isOdd ? "reveal-left" : "reveal-right");
+
   card.style.transitionDelay = `${index * 80}ms`;
   card.dataset.reveal = isOdd ? "left" : "right";
 
@@ -175,7 +165,7 @@ function renderMonthCard({ month, year, events, index }) {
   title.textContent = `${month} ${year}`;
   title.classList.add(isOdd ? "text-cyan-200" : "text-purple-200");
 
-  chip.textContent = `${events.length} events`;
+
 
   for (const e of events) {
     const li = document.createElement("li");
@@ -238,6 +228,7 @@ form.addEventListener("submit", async (e) => {
 
     // Update hero text
     heroText.textContent = `The year was ${year}`;
+    const entries = Object.entries(eventsByMonth);
 
 
     entries.forEach(([month, events], i) => {
