@@ -1,7 +1,6 @@
-from fastapi import HTTPException, status
-import re
-from backend.app.clients.wiki_client import get_year_page_source
-from backend.app.utils.wiki_cleaner import CLEANER
+import requests
+from app.clients.wiki_client import get_year_page_source
+from app.utils.wiki_cleaner import CLEANER
 
 
 
