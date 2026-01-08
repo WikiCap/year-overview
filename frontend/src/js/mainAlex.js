@@ -14,6 +14,7 @@ const wikiTpl = document.querySelector("#wikiCardTpl");
 const heroText = document.querySelector("#heroText");
 const tpl = wikiTpl;
 
+
 const recapHeader = document.querySelector("#recapHeader");
 const yearBadge = document.querySelector("#yearBadge");
 const submitBtn = document.querySelector("#submitBtn");
@@ -163,7 +164,7 @@ function renderMonthCard({ month, year, events, index }) {
   const list = node.querySelector(".monthList");
 
   title.textContent = `${month} ${year}`;
-  title.classList.add(isOdd ? "text-cyan-200" : "text-purple-200");
+  title.classList.add(isOdd ? "text-amber-200" : "text-amber-400");
 
 
 
@@ -218,7 +219,6 @@ form.addEventListener("submit", async (e) => {
     const data = await fetchYear(year);
 
     const eventsByMonth = data?.events_by_month ?? {};
-    const entries = Object.entries(eventsByMonth);
     const hasEvents = Object.keys(eventsByMonth).length > 0;
 
     if (!hasEvents) {
@@ -229,6 +229,7 @@ form.addEventListener("submit", async (e) => {
     // Update hero text
     heroText.textContent = `The year was ${year}`;
     const entries = Object.entries(eventsByMonth);
+    
 
 
     entries.forEach(([month, events], i) => {

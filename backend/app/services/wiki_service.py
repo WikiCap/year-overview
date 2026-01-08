@@ -57,6 +57,7 @@ def fetch_year_toc(year: int) -> str:
         "formatversion": "2",
     }
     request_response = httpx.get(WIKI_API, params=params, headers=HEADERS, timeout=20)
+    request_response = httpx.get(WIKI_API, params=params, headers=HEADERS, timeout=20)
     request_response.raise_for_status()
 
     return request_response.json().get("parse", {}).get("tocdata", [])
@@ -108,6 +109,7 @@ def get_month_wikitext(year: int, month_index: str) -> str:
         "formatversion": "2",
     }
 
+    request_response = httpx.get(WIKI_API, params=params, headers=HEADERS, timeout=20)
     request_response = httpx.get(WIKI_API, params=params, headers=HEADERS, timeout=20)
     request_response.raise_for_status()
 
