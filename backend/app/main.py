@@ -13,6 +13,7 @@ from app.api.v1.billboard import router as billboard_router
 from app.api.v1.awards import router as awards_router
 from app.api.v1.wiki import router as wiki_router
 from app.api.v1.music import router as music_router
+from app.api.v1.nobel import router as nobel_router
 
 app = FastAPI()
 
