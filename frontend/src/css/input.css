@@ -5,7 +5,9 @@
 @source "../**/*.html";
 @source "../**/*.js";
 
-/* Bas styling */
+/* ============================================
+   BASE STYLES - Colors, Variables, Defaults
+   ============================================ */
 
 @layer base {
   :root {
@@ -14,50 +16,61 @@
     --apricot: #FFA673;
     --vermilion: #FF4F0F;
 
-
-
     --bg: #fbfdec;
     --text: #0B1220;
     --muted: rgba(11, 18, 32, 0.6);
     --stroke: rgba(15, 23, 42, 0.1);
     --glass: rgba(255, 255, 255, 0.78);
   }
+
   body {
     color: var(--text);
   }
 }
 
-/* Reveal Hover och Shadows */
+/* ============================================
+   UTILITIES - Animations, Effects, Shadows
+   ============================================ */
 
-/* gömda scroll event */
 @layer utilities {
-  .reveal-left, .reveal-right {
+  /* Reveal Animations (Scroll Events) */
+  .reveal-left {
     opacity: 0;
-    will-change: transform, opacity;
+    transform: translateX(-600px) scale(0.985);
+    filter: blur(6px);
     transition:
-      transform 700ms cubic-bezier(0.2, 1, 0.32, 1),
-      opacity 700ms cubic-bezier(0.2, 1, 0.32, 1),
+      transform 2s cubic-bezier(0.2, 1, 0.32, 1),
+      opacity 2s ease,
+      filter 260ms ease;
   }
 
-  .reveal-left {
-    transform: translate3d(-60px, 0, 0);
-  }
   .reveal-right{
-    transform: translate3d(60px, 0, 0);
+    opacity: 0;
+    transform: translateX(600px) scale(0.985);
+    filter: blur(6px);
+    transition:
+      transform 2s cubic-bezier(0.2, 1, 0.32, 1),
+      opacity 2s ease,
+      filter 2s ease;
   }
+
   .is-visible {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translateX(0) scale(1);
+    filter: blur(0);
   }
+
+  /* Hover Effects */
   .hover-lift{
     transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
   }
+
   .hover-lift:hover{
     transform: translateY(-1px);
     filter: brightness(1.02);
   }
 
-  /* Shadows */
+  /* Shadow Utilities */
   .shadow-glass-teal{
     filter:
       drop-shadow(0 22px 60px rgba(3, 166, 161, 0.16))
@@ -75,6 +88,7 @@
       drop-shadow(0 22px 60px rgba(255, 79, 15, 0.12))
       drop-shadow(0 14px 38px rgba(255, 166, 115, 0.10));
   }
+
   .shadow-cta-teal{
     box-shadow:
       0 16px 34px rgba(3, 166, 161, 0.28),
@@ -82,8 +96,16 @@
   }
 }
 
-/* Components för hela sidan */
+/* ============================================
+   COMPONENTS
+   ============================================ */
+
 @layer components {
+
+  /* --------------------------------------------
+     PAGE LAYOUT - Shell, Main Container
+     -------------------------------------------- */
+
   .page-shell {
     @apply min-h-screen px-4;
     background:
@@ -92,23 +114,28 @@
       radial-gradient(900px circle at 50% 110%, rgba(255, 227, 187, 0.55), transparent 55%),
       linear-gradient(var(--bg), var(--bg));
   }
+
   .page-main {
     @apply mx-auto w-full max-w-4xl py-12 space-y-10;
   }
+
+  /* --------------------------------------------
+     HERO SECTION
+     -------------------------------------------- */
+
   .hero {
     @apply text-center space-y-5;
   }
+
   .brand-row {
     @apply inline-flex items-center justify-center gap-3;
   }
-  .title {
-    @apply text-4xl md:text-5xl font-semibold tracking-tight;
-    letter-spacing: -0.02em;
-  }
+
   .hero-subtitle {
     @apply max-w-2xl mx-auto text-sm md:text-base;
     color: rgba(11,18,32,0.7);
   }
+
   .hero-panel{
     @apply mx-auto max-w-2xl rounded-3xl p-4 md:p-5;
     background: rgba(255,255,255,0.7);
@@ -118,49 +145,44 @@
       0 1px 0 rgba(255,255,255,0.9) inset;
     backdrop-filter: blur(18px);
   }
-  .year-form{
-    @apply flex flex-col sm:flex-row gap-3 justify-center;
-  }
-  .year-input{
-    @apply w-full sm:w-56 rounded-full px-4 py-3 text-sm outline-none;
-    background: rgba(255,255,255,0.85);
-    border: 1px solid rgba(15,23,42,0.12);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset;
-  }
-  .year-input::placeholder{
-    color: rgba(11,18,32,0.45);
-  }
-  .year-input:focus {
-    border-color: rgba(3,166,161, 0.2);
-    box-shadow:
-      0 0 0 4px rgba(3,166,161,0.2) inset;
+
+  /* --------------------------------------------
+     TYPOGRAPHY - Titles, Text
+     -------------------------------------------- */
+
+  /* Main Titles */
+  .title {
+    @apply text-4xl md:text-5xl font-semibold tracking-tight;
+    letter-spacing: -0.02em;
   }
 
-
-  /* knappar och status */
-  .btn-primary{
-    @apply inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium;
-    background: var(--primary);
-    color: white;
+  .title-large {
+    @apply text-5xl md:text-6xl font-bold tracking-tight;
+    letter-spacing: -0.03em;
   }
 
-  .status-text{
-    @apply text-center text-sm;
-    color: rgba(11,18,32,0.65);
+  .title-medium {
+    @apply text-3xl md:text-4xl font-semibold tracking-tight;
+    letter-spacing: -0.02em;
   }
 
+  .title-small {
+    @apply text-2xl md:text-3xl font-medium tracking-tight;
+    letter-spacing: -0.015em;
+  }
+
+  /* Gradient Year Title */
   .year-title {
     font-weight: 800;
     letter-spacing: -0.035em;
+    line-height: 1;
     text-align: center;
-    line-height: 0.95;
     font-size: clamp(2.1rem, 4.8vw, 3.6rem);
-
-      background: linear-gradient(
-        90deg,
-        rgba(3, 166, 161, 1) 0%,
-        rgba(255, 166, 115, 1) 55%,
-        rgba(255, 79, 15, 1) 100%
+    background: linear-gradient(
+      90deg,
+      rgba(3, 166, 161, 1) 0%,
+      rgba(255, 166, 115, 1) 55%,
+      rgba(255, 79, 15, 1) 100%
     );
     -webkit-background-clip: text;
     background-clip: text;
@@ -169,21 +191,198 @@
     text-shadow: 0 10px 30px rgba(15,23,42,0.1);
   }
 
-  /* sektioner */
-  .section {
-    @apply space-y-4;
+  /* Gradient Title Variants */
+  .title-gradient-teal {
+    @apply font-bold;
+    background: linear-gradient(
+      135deg,
+      rgba(3, 166, 161, 1) 0%,
+      rgba(3, 166, 161, 0.7) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
-  .section-header {
-    @apply hidden items-center justify-between;
+  .title-gradient-warm {
+    @apply font-bold;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 166, 115, 1) 0%,
+      rgba(255, 79, 15, 1) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
-  .section-label{
-    @apply text-xs tracking-widest uppercase;
-    color: rgba(11,18,32,0.55);
+  .title-gradient-sunset {
+    @apply font-bold;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 227, 187, 1) 0%,
+      rgba(255, 166, 115, 1) 50%,
+      rgba(255, 79, 15, 1) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
+  /* Solid Color Titles */
+  .title-primary {
+    color: var(--primary);
+  }
 
+  .title-apricot {
+    color: var(--apricot);
+  }
+
+  .title-vermilion {
+    color: var(--vermilion);
+  }
+
+  .title-cream {
+    color: var(--cream);
+  }
+
+  /* Text Styles */
+  .text-primary {
+    color: var(--primary);
+  }
+
+  .text-muted {
+    color: var(--muted);
+  }
+
+  .text-subtle {
+    color: rgba(11, 18, 32, 0.55);
+  }
+
+  .text-emphasis {
+    @apply font-semibold;
+    color: var(--vermilion);
+  }
+
+  .text-highlight {
+    @apply font-medium;
+    color: var(--apricot);
+  }
+
+  /* Body Text Variants */
+  .text-body {
+    @apply text-base leading-relaxed;
+    color: var(--text);
+  }
+
+  .text-body-lg {
+    @apply text-lg leading-relaxed;
+    color: var(--text);
+  }
+
+  .text-body-sm {
+    @apply text-sm leading-normal;
+    color: rgba(11, 18, 32, 0.8);
+  }
+
+  /* Status & Info Text */
+  .status-text {
+    @apply text-center text-sm;
+    color: rgba(11,18,32,0.65);
+  }
+
+  .info-text {
+    @apply text-xs;
+    color: rgba(11, 18, 32, 0.6);
+  }
+
+  /* Section Headings */
+  .section-title {
+    @apply text-2xl font-semibold tracking-tight;
+    letter-spacing: -0.015em;
+    color: var(--text);
+  }
+
+  .section-subtitle {
+    @apply text-lg font-medium;
+    color: rgba(11, 18, 32, 0.75);
+  }
+
+  /* Special Text Effects */
+  .text-glow-teal {
+    color: var(--primary);
+    text-shadow:
+      0 0 20px rgba(3, 166, 161, 0.3),
+      0 0 40px rgba(3, 166, 161, 0.15);
+  }
+
+  .text-glow-warm {
+    color: var(--vermilion);
+    text-shadow:
+      0 0 20px rgba(255, 79, 15, 0.3),
+      0 0 40px rgba(255, 79, 15, 0.15);
+  }
+
+  /* Link Styles */
+  .link-primary {
+    @apply font-medium underline decoration-1 underline-offset-2;
+    color: var(--primary);
+    transition: color 150ms ease, text-decoration-color 150ms ease;
+  }
+
+  .link-primary:hover {
+    color: rgba(3, 166, 161, 0.8);
+    text-decoration-color: transparent;
+  }
+
+  .link-subtle {
+    @apply underline decoration-1 underline-offset-2;
+    color: rgba(11, 18, 32, 0.7);
+    transition: color 150ms ease;
+  }
+
+  .link-subtle:hover {
+    color: var(--primary);
+  }
+
+  /* --------------------------------------------
+     FORMS & INPUTS
+     -------------------------------------------- */
+
+  .year-form{
+    @apply flex flex-col sm:flex-row gap-3 justify-center;
+  }
+
+  .year-input{
+    @apply w-full sm:w-56 rounded-full px-4 py-3 text-sm outline-none;
+    background: rgba(255,255,255,0.85);
+    border: 1px solid rgba(15,23,42,0.12);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset;
+  }
+
+  .year-input::placeholder{
+    color: rgba(11,18,32,0.45);
+  }
+
+  .year-input:focus {
+    border-color: rgba(3,166,161, 0.2);
+    box-shadow:
+      0 0 0 4px rgba(3,166,161,0.2) inset;
+  }
+
+  /* --------------------------------------------
+     BUTTONS
+     -------------------------------------------- */
+
+  .btn-primary{
+    @apply inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium;
+    background: var(--primary);
+    color: white;
+  }
+
+  /* --------------------------------------------
+     BADGES & LABELS
+     -------------------------------------------- */
 
   .badge{
     @apply inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold;
@@ -192,7 +391,26 @@
     color: rgba(11,18,32,0.9);
   }
 
-  /* Recap kort */
+  .section-label{
+    @apply text-xs tracking-widest uppercase;
+    color: rgba(11,18,32,0.55);
+  }
+
+  /* --------------------------------------------
+     SECTIONS
+     -------------------------------------------- */
+
+  .section {
+    @apply space-y-4;
+  }
+
+  .section-header {
+    @apply hidden items-center justify-between;
+  }
+
+  /* --------------------------------------------
+     CARDS
+     -------------------------------------------- */
 
   .component-card {
     position: relative;
@@ -206,7 +424,6 @@
     border: 1px solid rgba(15, 23, 42, 0.06);
     backdrop-filter: blur(18px);
 
-
     box-shadow:
       22px 22px 44px rgba(15, 23, 42, 0.10),
       -18px -18px 40px rgba(255, 255, 255, 0.85),
@@ -219,7 +436,6 @@
     border: 1px solid rgba(15, 23, 42, 0.10);
     box-shadow: 0 18px 55px rgba(15, 23, 42, 0.12);
   }
-
 
   .component-card::after {
     content: "";
@@ -241,7 +457,6 @@
     opacity: 0.85;
   }
 
-
   .component-card::before {
     content: "";
     position: absolute;
@@ -258,12 +473,10 @@
     opacity: 0.50;
   }
 
-
   .component-card > * {
     position: relative;
     z-index: 1;
   }
-
 
   .component-card:hover {
     transform: translateY(-2px);
@@ -302,11 +515,14 @@
 
 
 
+/* --------------------------------------------
+   TIMELINE
+   -------------------------------------------- */
 
-  /* tidslinje */
   .timeline-wrap{
     position: relative;
   }
+
   .timeline-line{
     position: absolute;
     top: 0;
@@ -333,6 +549,7 @@
     pointer-events: none;
     z-index: 0;
   }
+
   .timeline-line::after{
     content: "";
     position: absolute;
@@ -343,7 +560,6 @@
     opacity: 0.22;
   }
 
-  /*kort position (över linjen) */
   .timeline-wrap .card,
   .timeline-wrap .component-card {
     position: relative;
@@ -351,3 +567,4 @@
   }
 
 }
+
