@@ -11,27 +11,31 @@ def get_year(year: int):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail = "BAD REQUEST: Year must be between 1800 and 2027"
         )
-    elif status := 404:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail = f"NOT FOUND: No data found for year {year}"
-            )
 
     try:
-        fetch_year_summary(year)
+        events = fetch_year_summary(year)
 
-    except httpx.HTTPStatusError as e:
+    except httpx.HTTPError as e:
+        if e.response.status_code == 404:
+            raise HTTPException(
+                status_code = status.HTTP_404_NOT_FOUND,
+                detail = f"NOT FOUND: Wikipedia page for year {year} not found."
+            )
         raise HTTPException(
-            status_code=e.response.status_code,
-            detail = f"INTERNAL SERVER ERROR: failed to fetch data for year {year}: {str(e)}"
+            status_code = status.HTTP_502_BAD_GATEWAY,
+            detail = "BAD GATEWAY: Error connecting to Wikipedia API."
         )
-
-    except httpx.RequestError as e:
+    except Exception as e:
         raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail = "Wiki"
+            status_code = status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail = "SERVICE UNAVAILABLE: An unexpected error occurred."
+        )
+    if not events:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = f"NOT FOUND: No events found for year {year}."
         )
     return {
         "year": year,
-        "events_by_month": fetch_year_summary(year)
+        "events_by_month": events
     }
