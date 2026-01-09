@@ -51,7 +51,7 @@ def get_songs_by_year(year: int, token):
         params={
             "q": f"year:{year}",
             "type": "track",
-            "limit": 10
+            "limit": 50,
         }
     )
     songs = response.json()["tracks"]["items"]
