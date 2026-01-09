@@ -13,4 +13,7 @@ def get_billboard_artists(year:int):
     
 @router.get("/year/{year}/billboard/artist/top-songs")
 def get_billboard_top_songs(year: int, limit: int=5):
-    return get_year_with_hit_songs(year, limit)    
+    result = get_year_with_hit_songs(year, limit)
+    print("TOP SONGS RESULT:", result)  
+    return result
+   

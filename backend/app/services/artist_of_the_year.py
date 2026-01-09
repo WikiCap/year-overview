@@ -18,6 +18,11 @@ def get_artist_of_the_year(year: int) ->list[str]:
     """
     response, table_class = get_billboard_artist(year)
     
+    print("DEBUG response is none", response is None)
+    print("DEBUG table_class", table_class)
+        
+    
+    
     if response is None or table_class is None: 
         print("nu sket det sig här 1111")
         # return []

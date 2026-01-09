@@ -58,36 +58,49 @@ const observer = new IntersectionObserver(entries => {
     return data ?? {};
   }
 
-  function renderTopArtist(artistData) {
-    clearTopArtist();
+ async function renderTopArtist(artistData, year) {
+  clearTopArtist();
 
+  if (!artistData || !ArtistTpl || !ArtistGrid || !ArtistSection) return;
 
-    if (!artistData || !ArtistTpl || !ArtistGrid || !ArtistSection) return;
+  ArtistSection.classList.remove("hidden");
 
-    
+  let topTracksByArtist = new Map();
+  try {
+    const topSongsData = await fetchBillboardTopSong(year, 5);
+    topTracksByArtist = new Map(
+      (topSongsData.artist ?? []).map(a => [a.artist, a.toptracks ?? []])
+    );
+} catch (err) {
+  console.error("Top songs fecth failed:", err);
+}
 
-    ArtistSection.classList.remove("hidden");
+  for (let index = 0; index < artistData.artists.length; index++) {
+    const artistName = artistData.artists[index];
+    const node = ArtistTpl.content.firstElementChild.cloneNode(true);
 
-    artistData.artists.forEach((artistName, index) => {
-      const node = ArtistTpl.content.firstElementChild.cloneNode(true);
+    const isLeft = index % 2 === 0;
+    node.classList.add(
+      "reveal",
+      "opacity-0",
+      "transition-all",
+      "duration-700",
+      "ease-out",
+      "blur-sm",
+      isLeft ? "-translate-x-10" : "translate-x-10"
+    );
 
+    node.dataset.reveal = isLeft ? "left" : "right";
 
-      const isLeft = index % 2 === 0;
-      node.classList.add("reveal",
-        "opacity-0",
-        "transition-all",
-        "duration-700",
-        "ease-out",
-        "blur-sm",
-        isLeft ? "-translate-x-10" : "translate-x-10"
-      );
+    node.querySelector(".name").textContent = artistName;
 
-      node.dataset.reveal = isLeft ? "left" : "right";
+    const toptracks = topTracksByArtist.get(artistName) ?? [];
+    renderTopSongs(toptracks, node);
 
-      // const img = node.querySelector("img");
-      const nameEl = node.querySelector(".name");
-      
-      nameEl.textContent = artistName;
+    ArtistGrid.appendChild(node);
+    observer.observe(node);
+  }
+}
 
     //   const imgUrl = topArtist.image || "";
     //   if (imgUrl) {
@@ -97,10 +110,36 @@ const observer = new IntersectionObserver(entries => {
     //     img.src = "https://www.billboard.com/lists/year-end-hot-100-number-one-songs/";
     //     img.alt = "Billboard Top Songs by Year";
     //   }
-      ArtistGrid.appendChild(node);
-      observer.observe(node);
-    });
+      
+  
+  async function fetchBillboardTopSong(year, limit=5) {
+    const res = await fetch(
+      `${API_BASE}/api/v1/year/${year}/billboard/artist/top-songs?limit=${limit}`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch top songs");
+    }
+      return await res.json();
   }
+
+  function renderTopSongs(songs, container) {
+    if (!songs || songs.length === 0) return;
+
+    container.querySelector(".top-songs")?.remove();
+
+    const ul = document.createElement("ul");
+    ul.className = "mt-2 text-sm list-disc pl-4";
+
+    songs.forEach(song => {
+      const title = typeof song === "string" ? song : song?.title;
+      if (!title) return;
+
+      const li = document.createElement("li");
+      li.textContent = title;
+      ul.appendChild(li);
+    });
+     container.appendChild(ul);
+  }
+
 
 function setStatus(text, kind = "info") {
   statusEl.className = "text-center";
@@ -198,19 +237,13 @@ form.addEventListener("submit", async (e) => {
 
   try {
     const ArtistData = await fetchArtistOfTheYear(year);
+    await renderTopArtist(ArtistData,year);
 
     console.log(ArtistData);
     
-    
-    renderTopArtist(ArtistData);
-  } catch (err) {
-    console.error(err);
-    setStatus("Kunde inte hämta Billboard-data.", "error");
-    clearTopArtist();
-  }
 
-  try {
-    const data = await fetchYear(year);
+
+  const data = await fetchYear(year);
 
     const eventsByMonth = data?.events_by_month ?? {};
     const entries = Object.entries(eventsByMonth);
@@ -234,12 +267,9 @@ form.addEventListener("submit", async (e) => {
   } catch (err) {
     console.error(err);
     setStatus("Could not fetch data. Is the backend running on 127.0.0.1:8000?", "error");
+    clearTopArtist();
   } finally {
     submitBtn.disabled = false;
     submitBtn.classList.remove("opacity-70", "cursor-not-allowed");
   }
-
-
-
 });
-
