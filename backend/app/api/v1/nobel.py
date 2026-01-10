@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 from app.services.nobel_service import get_nobel_prizes
 
 router = APIRouter()
