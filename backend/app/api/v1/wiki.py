@@ -8,12 +8,12 @@ router = APIRouter()
 
 
 @router.get("/year/{year}/wiki", status_code=status.HTTP_200_OK)
-def get_year(year: int):
+async def get_year(year: int):
     validate_year(year)
 
 
     try:
-        events = fetch_year_summary(year)
+        events = await fetch_year_summary(year)
 
     except httpx.HTTPStatusError as e:
         code = e.response.status_code
