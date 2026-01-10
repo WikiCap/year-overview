@@ -8,7 +8,6 @@ router = APIRouter()
 def get_billboard_artists(year:int):
     result = get_artist_of_the_year(year)
     print(result)
-    print("Heejejjeje")
     return result
     
 @router.get("/year/{year}/billboard/artist/top-songs")

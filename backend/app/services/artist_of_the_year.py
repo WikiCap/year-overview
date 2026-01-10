@@ -1,60 +1,109 @@
 import re
 from bs4 import BeautifulSoup
-from app.clients.billboard_artist_client import get_billboard_artist
+from app.clients.billboard_artist_client import get_billboard_page
 
+
+
+def find_artist_column(table_data: list[str]) -> int| None:
+    """
+    Identify the column in a table header that corresponds to artist information.
+
+    The function iterates through a list of header strings,
+    and returns the index of the first one containing the word "artist". 
+    If no matching header is found, None is returned.
+
+    Args:
+        table_data (list[str]): A list of column header strings.
+
+    Returns:
+        int or None: The index of the column containing "artist", or None if
+        no matching column is found.
+    """
+    for column_index, header in enumerate(table_data):
+        table_head = header.lower()
+        if "artist" in table_head:
+            return column_index 
+    return None    
+        
   
-def get_artist_of_the_year(year: int) ->list[str]:
+def get_artist_of_the_year(year: int) -> dict:
     """
-      Fetch the Billboard top artists for a given year. 
-      It retrives the HTTP response and table class from Billboard using get_billboard_artist function. 
-      Then it parses the HTML content with BeautifulSoup to extract artist names from the specified table.
+    Extracts artist names from the Billboard Hot 100 Wikipedi Page for a given year.
     
-      Args:
-            year (int): The year for which to retrive the top Billboard artists.
+    The function fetches the page, finds the first table with an "Artist" column, 
+    and extracts all artist names from that column removing duplicates while keeping the original order.
+    The function always returns a dictionary.
     
-      Returns:  
-            list[str]: A list of artist names for the specified year. 
-                Returns an empty list if no artists are found or if the request fails.  
-    """
-    response, table_class = get_billboard_artist(year)
-    
-    print("DEBUG response is none", response is None)
-    print("DEBUG table_class", table_class)
-        
-    
-    
-    if response is None or table_class is None: 
-        print("nu sket det sig här 1111")
-        # return []
-        return { "year": -1, "artists": [], "error": "det sket sig 1"}
+    Args:
+        year (int): The year for which to retrieve artist information.
 
-    
-    #Läser in HTML-sida med BeautifulSoup. 
-    soup = BeautifulSoup(response.text, "html.parser")
-     
-    #Letar upp rätt tabell på sidan när Billdoard listar topp 3 artister för året. 
-    table = soup.find("table", class_=table_class)
-    if not table: 
-        print("nu sket det sig här 22222")
-        return { "year": -1, "artists": [], "error": "det sket sig 2"}
-        
-    list_of_artists = []
-    
-    rows = table.find_all("tr")[1:] # Hoppar över header-raden.
-    for row in rows:
-        cells = row.find_all(["th", "td"])
-        if len(cells) <= 2:
+    Returns:
+        dict: A dictionary containing the year, a list of artist names,
+        and optionally an error message if parsing fails.
+    """
+    html = get_billboard_page(year)
+
+    # Fel: kunde inte hämta html eller html var tom
+    if html is None or html.strip() == "":
+        return {
+            "year": year, 
+            "artists": [], 
+            "error": "Could not fetch Billboard page"
+        }
+
+    soup = BeautifulSoup(html, "html.parser")
+
+    # Wikipedia har ofta flera wikitable — vi letar efter en tabell vars header innehåller "Artist"
+    all_tables = soup.select("table.wikitable")
+
+    selected_table = None
+    artist_column_index = None
+
+    for table in all_tables:
+        header_row = table.find("tr")
+        if header_row is None:
             continue
-        
-        artist_name = cells[1].get_text(strip=True)
-        
-        #Tar bort eventuella referensmarkeringar i artistnamnet. Ersätter text som matchar ett mönster.
-        artist_name = re.sub(r"\[.*?\]", "", artist_name).strip()
-        
-        if artist_name:
-            list_of_artists.append(artist_name)
-    
+
+        header_cells = header_row.find_all(["th", "td"])
+        header_texts = [cell.get_text(" ", strip=True) for cell in header_cells]
+
+        artist_column = find_artist_column(header_texts)
+        if artist_column is not None:
+            selected_table = table
+            artist_column_index = artist_column
+            break
+
+    if selected_table is None or artist_column_index is None:
+        return {
+            "year": year, 
+            "artists": [], 
+            "error": "Could not find a table with an Artist column"
+        }
+
+    # Plocka ut artister från rätt kolumn
+    extracted_artists: list[str] = []
+
+    data_rows = selected_table.find_all("tr")[1:]  # hoppa över header
+    for row in data_rows:
+        cells = row.find_all(["th", "td"])
+        if len(cells) <= artist_column_index:
+            continue
+
+        raw_artist = cells[artist_column_index].get_text(" ", strip=True)
+        cleaned_artist = re.sub(r"\[.*?\]", "", raw_artist).strip()  # tar bort [1], [a] osv
+
+        if cleaned_artist:
+            extracted_artists.append(cleaned_artist)
+
+    # Ta bort dubbletter men behåll ordning
+    unique_artists: list[str] = []
+    seen = set()
+    for artist in extracted_artists:
+        if artist not in seen:
+            unique_artists.append(artist)
+            seen.add(artist)
+
     return {
-        "year": year,
-        "artists": list_of_artists  
+        "year": year, 
+        "artists": unique_artists
     }
