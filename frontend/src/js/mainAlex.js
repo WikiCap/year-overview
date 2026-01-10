@@ -228,7 +228,7 @@ form.addEventListener("submit", async (e) => {
 
     // Update hero text
     heroText.textContent = `The year was ${year}`;
-    const entries = Object.entries(eventsByMonth);
+    //const entries = Object.entries(eventsByMonth);
 
 
     entries.forEach(([month, events], i) => {

@@ -23,6 +23,131 @@ const ArtistGrid = document.querySelector("#ArtistGrid");
 const ArtistTpl = document.querySelector("#ArtistCardTpl");
 const statsEl = document.querySelector("#stats");
 
+//let cleanupArtistPin = null;
+
+// function setupArtistPinReveal() {
+// if (cleanupArtistPin) cleanupArtistPin();
+
+// const section = document.querySelector("#ArtistSection");
+// const spacer = document.querySelector("#ArtistPinSpacer");
+// const cards = Array.from(document.querySelectorAll("#ArtistGrid .pin-card"));
+
+// if (!section || !spacer || cards.length === 0) return; 
+
+// const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+// const pxPerCard = 140; // justera känslan: 100 snabbare, 200 långsammare
+
+// const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+// function showCard(card) {
+//   card.classList.remove("opacity-0", "translate-y-6", "blur-sm", "pointer-events-none");
+//   card.classList.add("opacity-100", "translate-y-0", "blur-0");
+// }
+
+// function hideCard(card) {
+//   card.classList.add("opacity-0", "translate-y-6", "blur-sm", "pointer-events-none");
+//   card.classList.remove("opacity-100", "translate-y-0", "blur-0");
+// }
+
+// function layout() {
+//   // Scroll-längd för hela pinned-upplevelsen
+//   spacer.style.height = `${window.innerHeight + cards.length * pxPerCard}px`;
+//   update();
+// }
+
+// function update() {
+//   const start = section.offsetTop;
+//   const end = start + spacer.offsetHeight - window.innerHeight;
+
+//   const y = window.scrollY;
+//   const progress = clamp((y - start) / (end - start || 1), 0, 1);
+
+//   const scrolledCount = prefersReduced
+//     ? cards.length
+//     : Math.floor(progress * (cards.length + 0.999));
+
+//   const initialVisible = 3;
+
+//   const visibleCount = Math.min(
+//     cards.length,
+//     Math.max(initialVisible, scrolledCount)
+//   ); 
+
+//   cards.forEach((card, index) => {
+//     if(index < visibleCount) showCard(card);
+//     else hideCard(card);
+
+//   });
+
+// }
+
+let cleanupArtistAutoReveal = null;
+
+function setupArtistAutoReveal({
+  initialVisible = 3,
+  delayMs = 1000, //styr att det blir 1 sekund mellan varje nytt kort. 
+  durationMs = 1200, //styr så att animationen tar 1,2 sek. (långsammare)
+
+} = {}) {
+  if (cleanupArtistAutoReveal) cleanupArtistAutoReveal();
+
+  const cards = Array.from(document.querySelectorAll("#ArtistGrid .pin-card"));
+  if (cards.length === 0) return;
+
+
+  function showCard(card) {
+    card.classList.remove("opacity-0", "translate-y-6", "blur-sm", "pointer-events-none");
+    card.classList.add("opacity-100", "translate-y-0", "blur-0");
+  }
+
+  // Sätt långsammare transition (override på varje kort)
+    cards.forEach(card => {
+    card.style.transitionDuration = `${durationMs}ms`;
+  });
+
+  // Visa första "radens" kort direkt
+  const firstCount = Math.min(initialVisible, cards.length);
+  for (let index = 0; index < firstCount; index++) showCard(cards[index]);
+
+  //Visa upp resterande kort automatiskt. 
+  let index = firstCount;
+  const timer = setInterval(() => {
+    if (index >= cards.length) {
+      clearInterval(timer);
+      return;
+    }
+    showCard(cards[index]);
+    index++;
+  }, delayMs);
+
+  cleanupArtistAutoReveal = () => {
+    clearInterval(timer);
+    cleanupArtistAutoReveal = null;
+  };
+}
+
+// let ticking = false;
+// function onScroll() {
+//   if (ticking) return;
+//   ticking = true;
+//   requestAnimationFrame(() => {
+//     update();
+//     ticking = false;
+//   });
+// }
+
+  //window.addEventListener("scroll", onScroll, { passive: true});
+  //window.addEventListener("resize", layout);
+
+  //layout();
+
+//   cleanupArtistPin = () => {
+//     window.removeEventListener("scroll", onScroll);
+//     window.removeEventListener("resize", layout);
+//     spacer.style.height = "0px";
+//     cleanupArtistPin = null;
+// };
+
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
@@ -45,6 +170,8 @@ const observer = new IntersectionObserver(entries => {
     );
 
   function clearTopArtist() {
+  //if (cleanupArtistPin) cleanupArtistPin();  
+  if (cleanupArtistAutoReveal) cleanupArtistAutoReveal();
   if (ArtistGrid) ArtistGrid.innerHTML = "";
   if (ArtistSection) ArtistSection.classList.add("hidden");
   if (statsEl) statsEl.textContent = "";
@@ -74,23 +201,23 @@ const observer = new IntersectionObserver(entries => {
 } catch (err) {
   console.error("Top songs fecth failed:", err);
 }
+  const maxArtistsCards = 6;
 
-  for (let index = 0; index < artistData.artists.length; index++) {
+  for (let index = 0; index < Math.min( maxArtistsCards, artistData.artists.length); index++) {
     const artistName = artistData.artists[index];
     const node = ArtistTpl.content.firstElementChild.cloneNode(true);
 
-    const isLeft = index % 2 === 0;
+    
     node.classList.add(
-      "reveal",
+      "pin-card",
       "opacity-0",
-      "transition-all",
-      "duration-700",
-      "ease-out",
+      "translate-y-6",
       "blur-sm",
-      isLeft ? "-translate-x-10" : "translate-x-10"
+      "pointer-events-none",
+      "transition-all",
+      "duration-500",
+      "will-change-transform"
     );
-
-    node.dataset.reveal = isLeft ? "left" : "right";
 
     node.querySelector(".name").textContent = artistName;
 
@@ -98,9 +225,22 @@ const observer = new IntersectionObserver(entries => {
     renderTopSongs(toptracks, node);
 
     ArtistGrid.appendChild(node);
-    observer.observe(node);
   }
+
+  //setupArtistPinReveal();
+  setupArtistAutoReveal({
+    initialVisible: 3,
+    delayMs: 1000,
+    durationMs: 1200
+  });
+
+  requestAnimationFrame(() => {
+  const position = ArtistSection.getBoundingClientRect().top + window.scrollY;
+  const offset = 220;
+  window.scrollTo({ top: position - offset, behavior: "smooth"});
+  });
 }
+
 
     //   const imgUrl = topArtist.image || "";
     //   if (imgUrl) {
@@ -124,7 +264,10 @@ const observer = new IntersectionObserver(entries => {
   function renderTopSongs(songs, container) {
     if (!songs || songs.length === 0) return;
 
-    container.querySelector(".top-songs")?.remove();
+    const listOfSongs = container.querySelector(".songs") ?? container;
+    listOfSongs.innerHTML = ""; 
+    
+    //container.querySelector(".top-songs")?.remove();
 
     const ul = document.createElement("ul");
     ul.className = "mt-2 text-sm list-disc pl-4";
@@ -137,7 +280,7 @@ const observer = new IntersectionObserver(entries => {
       li.textContent = title;
       ul.appendChild(li);
     });
-     container.appendChild(ul);
+     listOfSongs.appendChild(ul);
   }
 
 
@@ -243,25 +386,25 @@ form.addEventListener("submit", async (e) => {
     
 
 
-  const data = await fetchYear(year);
+  // const data = await fetchYear(year);
 
-    const eventsByMonth = data?.events_by_month ?? {};
-    const entries = Object.entries(eventsByMonth);
-    const hasEvents = Object.keys(eventsByMonth).length > 0;
+  //   const eventsByMonth = data?.events_by_month ?? {};
+  //   const entries = Object.entries(eventsByMonth);
+  //   const hasEvents = Object.keys(eventsByMonth).length > 0;
 
-    if (!hasEvents) {
-      setStatus(`Found no events for ${year}.`, "error");
-      return;
-    }
+  //   if (!hasEvents) {
+  //     setStatus(`Found no events for ${year}.`, "error");
+  //     return;
+  //   }
 
-    // Update hero text
-    heroText.textContent = `The year was ${year}`;
-    //const entries = Object.entries(eventsByMonth);
+  //   // Update hero text
+      heroText.textContent = `Top artists of the year ${year}`;
+  //   //const entries = Object.entries(eventsByMonth);
 
 
-    entries.forEach(([month, events], i) => {
-      renderMonthCard({ month, year, events, index: i });
-    });
+  //   entries.forEach(([month, events], i) => {
+  //     renderMonthCard({ month, year, events, index: i });
+  //   });
 
     setStatus("");
   } catch (err) {
