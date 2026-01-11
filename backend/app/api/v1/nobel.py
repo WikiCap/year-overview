@@ -30,7 +30,7 @@ def year_nobel(year: int):
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail=f"BAD GATEWAY: Wikipedia returned {code}."
         )
-    
+
     except httpx.RequestError:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
