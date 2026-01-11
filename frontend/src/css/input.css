@@ -1,5 +1,6 @@
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
 
 @source "../index.html";
 @source "../**/*.html";
@@ -15,7 +16,8 @@
     --vermilion: #FF4F0F;
 
 
-    --bg: #f7FAFB;
+
+    --bg: #fbfdec;
     --text: #0B1220;
     --muted: rgba(11, 18, 32, 0.6);
     --stroke: rgba(15, 23, 42, 0.1);
@@ -30,28 +32,63 @@
 
 /* gömda scroll event */
 @layer utilities {
-  .reveal-left {
+
+
+  .loader{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    height: 100px;
+  }
+
+  .infinite-svg{
+    width: 300px;
+    height: 100px;
+  }
+
+  .infinity-track{
+    fill: none;
+    stroke: var(--cream);
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.35;
+  }
+
+  .infinity-path{
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    stroke-dasharray: 120 380;
+    stroke-dashoffset: 0;
+    animation: infinity-dash 1.4s linear infinite;
+
+  }
+  @keyframes infinity-dash {
+    72.5% {opacity: 1;}
+    to {stroke-dashoffset: -500;}
+  }
+
+  .reveal-left, .reveal-right {
     opacity: 0;
-    transform: translateX(-60px) scale(0.985);
-    filter: blur(6px);
+    will-change: transform, opacity;
     transition:
-      transform 800ms cubic-bezier(0.2, 1, 0.32, 1),
-      opacity 260ms ease,
-      filter 260ms ease;
+      transform 700ms cubic-bezier(0.2, 1, 0.32, 1),
+      opacity 700ms cubic-bezier(0.2, 1, 0.32, 1),
+  }
+
+  .reveal-left {
+    transform: translate3d(-60px, 0, 0);
   }
   .reveal-right{
-    opacity: 0;
-    transform: translateX(60px) scale(0.985);
-    filter: blur(6px);
-    transition:
-      transform 800ms cubic-bezier(0.2, 1, 0.32, 1),
-      opacity 260ms ease,
-      filter 260ms ease;
+    transform: translate3d(60px, 0, 0);
   }
   .is-visible {
     opacity: 1;
-    transform: translateX(0) scale(1);
-    filter: blur(0);
+    transform: translate3d(0, 0, 0);
   }
   .hover-lift{
     transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
@@ -96,8 +133,11 @@
       radial-gradient(900px circle at 50% 110%, rgba(255, 227, 187, 0.55), transparent 55%),
       linear-gradient(var(--bg), var(--bg));
   }
-  .page-main {
+  .page-main-centered {
     @apply mx-auto w-full max-w-4xl py-12 space-y-10;
+  }
+  .page-main-wide {
+    @apply mx-auto w-full max-w-7xl py-12 space-y-10;
   }
   .hero {
     @apply text-center space-y-5;
@@ -156,6 +196,7 @@
   .year-title {
     font-weight: 800;
     letter-spacing: -0.035em;
+    text-align: center;
     line-height: 0.95;
     font-size: clamp(2.1rem, 4.8vw, 3.6rem);
 
@@ -215,6 +256,13 @@
       -18px -18px 40px rgba(255, 255, 255, 0.85),
       0 28px 90px rgba(15, 23, 42, 0.06);
   }
+  /* Laggar satan i nobel korten , använder denna för att motverka */
+    .component-card-lite {
+    @apply rounded-3xl p-6;
+    background: rgba(255,255,255,0.86);
+    border: 1px solid rgba(15, 23, 42, 0.10);
+    box-shadow: 0 18px 55px rgba(15, 23, 42, 0.12);
+  }
 
 
   .component-card::after {
@@ -271,6 +319,30 @@
       0 34px 110px rgba(15, 23, 42, 0.07);
   }
 
+  /* Nobel grid */
+  .nobel-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6;
+  }
+
+  .nobel-card {
+    @apply h-full flex flex-col items-center text-center gap-4 p-6;
+  }
+
+  .nobel-name {
+    @apply font-semibold text-slate-900 text-lg leading-tight;
+  }
+
+  .nobel-category {
+    @apply text-xs text-slate-500 uppercase tracking-wide;
+  }
+
+  .nobel-motivation {
+    @apply text-sm text-slate-700 leading-relaxed;
+  }
+
+  .nobel-img {
+    @apply w-40 h-40 rounded-2xl object-cover border border-slate-900/10 aspect-square;
+  }
 
 
   /* tidslinje */

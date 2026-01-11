@@ -1,17 +1,15 @@
 import base64
 from dotenv import load_dotenv
-import os
-
 load_dotenv()
-# from app.api.v1.year import router as year_router
-# from app.api.v1.movies import router as movies_router
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.year import router as year_router
 from app.api.v1.movies import router as movies_router
-from app.api.v1.billboard import router as billboard_router
 from app.api.v1.awards import router as awards_router
 from app.api.v1.wiki import router as wiki_router
+from app.api.v1.nobel import router as nobel_router
+from app.api.v1.billboard import router as billboard_router
 from app.api.v1.music import router as music_router
 
 app = FastAPI()
@@ -40,7 +38,7 @@ def read_root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="8000", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
 
 
 

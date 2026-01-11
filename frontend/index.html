@@ -1,40 +1,28 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>test</title>
-    <link rel="stylesheet" href="./output.css" />
+    <link rel="stylesheet" href="dist/output.css" />
   </head>
-  <body class="min-h-screen bg-slate-950 bg-[radial-gradient(circle_at_top,#1f2937_0,#020617_45%,#000_100%)] text-slate-50 flex items-center justify-center px-4">
-    <main class="w-full max-w-xl text-center space-y-8">
+  <body class="page-shell">
+    <main class="page-main-wide">
       <header class="space-y-2 pt-3 ml-5">
         <div class="flex items-center justify-center gap-2 pr-3">
-          <img src="https://img.icons8.com/?size=100&id=48164&format=png&color=000000" class="w-8 h-8 md:w-20 md:h-20 translate-y-[1px] opacity-80 hover:opacity-100 hover:drop-shadow-[0_0_6px_rgba(99,102,241,0.8)] transition" />
+          <img src="src/img/icons8-refresh-128.svg" class="w-8 h-8 md:w-20 md:h-20 translate-y-[1px] opacity-80 hover:opacity-100 hover:drop-shadow-[0_0_6px_rgba(99,102,241,0.8)] transition" />
           <h1 class="text-4xl md:text-5xl font-semibold tracking-tight uppercase">WikiCap</h1>
         </div>
       </header>
 
-      <form id="yearForm" class="flex flex-col sm:flex-row gap-3 justify-center">
-        <input
-          id="yearInput"
-          type="text"
-          name="year"
-          placeholder="Till exempel 1997"
-          class="w-full sm:w-48 bg-slate-900/80 border border-slate-700/80 rounded-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-slate-500"
-        />
-        <button
-          id="submitBtn"
-          type="submit"
-          class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium bg-indigo-500 hover:bg-indigo-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-slate-950"
-        >
-          Hämta år
-        </button>
+      <form id="yearForm" class="year-form">
+        <input id="yearInput" type="text" name="year" placeholder="For example 1997" class="year-input" />
+        <button id="submitBtn" type="submit" class="btn-primary shadow-cta-teal hover-lift">Get year</button>
       </form>
-      <div id="status" class="text-center text-sm text-slate-300"></div>
-      <h1 class="year-h1"><span> </span><span id="heroText"></span></h1>
+      <div id="status" class="status-text"></div>
+      <h1 class="year-title"><span> </span><span id="heroText"></span></h1>
 
-      <section class="space-y-4">
+      <section class="space-y-4 page-main-centered">
         <div id="recapHeader" class="hidden items-center justify-between">
           <p class="section-label">Recap</p>
           <span id="yearBadge" class="timeline-node"></span>
@@ -47,43 +35,46 @@
         </div>
       </section>
 
-      <!-- Wikipedia recap -->
-      <template id="monthCardTpl">
+
+      <!-- Wikipedia recap del -->
+      <template id="wikiCardTpl">
         <div class="flex mt-6">
-          <div class="component-card w-full md:w-3/4 space-y-3">
+          <div class="component-card shadow-glass-teal hover-lift w-full md:w-3/4 space-y-3">
             <div class="flex items-center justify-between">
               <h3 class="monthTitle text-xl font-semibold"></h3>
               <span class="monthChip stat-chip"></span>
             </div>
-            <ul class="monthList space-y-2 text-slate-200/90 text-sm"></ul>
+            <ul class="monthList space-y-2 text-slate-700 text-sm"></ul>
           </div>
         </div>
       </template>
+    </section>
+      <!-- Nobel prize del -->
+      <section class="hidden space-y-6 pt-10" id="nobelSection">
+        <div class="flex items-center justify-between">
+          <p class="section-label">Nobel Price Winners Of The Year</p>
+          <span id="stats">Nobel Prize</span>
+        </div>
 
-        <!-- Music recap -->
-      <template id="musicCardTpl">
-        <div class="flex mt-6">
-        </template>
-
-
-        <!-- Movie / series  recap -->
-        <template id="movieCardTpl">
-            <div class="flex mt-6">
-            </div>
-        </template>
-
-        <!-- Nobel Recap -->
+        <div id="nobelGrid" class="nobel-grid"></div>
         <template id="nobelCardTpl">
-            <div class="flex mt-6">
+          <div class="component-card-lite nobel-card glass-shadow-warm">
+            <h3 class="nobel-name name"></h3>
+            <img class="nobel-img" />
+            <div class="space-y-2">
+              <p class="nobel-category category"></p>
+              <p class="nobel-motivation motivation"></p>
             </div>
+          </div>
         </template>
+      </section>
 
-
-
-
-
-
+      <section>
+        <div id="highlightsSection"></div>
+        <div id="movieSection"></div>
+        <div id="seriesSection"></div>
+      </section>
     </main>
-    <script src="./src/js/mainAlex.js"></script>
+    <script type="module" src="./src/js/mainAlex.js"></script>
   </body>
 </html>
