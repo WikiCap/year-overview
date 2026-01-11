@@ -7,9 +7,12 @@ const form = document.querySelector("#yearForm");
 const input = document.querySelector("#yearInput");
 const statusEl = document.querySelector("#status");
 const resultsEl = document.querySelector("#results");
+
+const entertainmentSection = document.querySelector("#entertainmentSection");
 const highlightsSection = document.querySelector("#highlightsSection");
 const movieSection = document.querySelector("#movieSection");
 const seriesSection = document.querySelector("#seriesSection");
+
 const wikiTpl = document.querySelector("#wikiCardTpl");
 const heroText = document.querySelector("#heroText");
 const tpl = wikiTpl;
@@ -229,12 +232,30 @@ form.addEventListener("submit", async (e) => {
     // Update hero text
     heroText.textContent = `The year was ${year}`;
     const entries = Object.entries(eventsByMonth);
-    
+
 
 
     entries.forEach(([month, events], i) => {
       renderMonthCard({ month, year, events, index: i });
     });
+
+    if (data.movie_highlights && data.movies?.topMovies && data.series?.topSeries) {
+
+      entertainmentSection.classList.remove("hidden");
+
+      highlightsSection.innerHTML = renderHighlights(data.movie_highlights, year);
+      movieSection.innerHTML = renderMovies(listSorter(data.movies.topMovies, "rating"));
+      seriesSection.innerHTML = renderSeries(listSorter(data.series.topSeries, "rating"));
+
+      setTimeout(() => {
+        const movieCards = movieSection.querySelectorAll('.movie-card.reveal');
+        const seriesCards = seriesSection.querySelectorAll('.series-card.reveal');
+        
+        movieCards.forEach(card => observer.observe(card));
+        seriesCards.forEach(card => observer.observe(card));
+      }, 0);
+
+    }
 
     setStatus("");
   } catch (err) {
@@ -244,8 +265,22 @@ form.addEventListener("submit", async (e) => {
     submitBtn.disabled = false;
     submitBtn.classList.remove("opacity-70", "cursor-not-allowed");
   }
-
-
-
 });
+
+/**
+ * Generic insertion sort function for sorting arrays by a numeric property in descending order
+ * @param {Array} arr - Array to sort
+ * @param {string} property - Property name to sort by, e.g rating, votes etc.
+ * @returns {Array} - Sorted array (new array, doesn't mutate original)
+ */
+function listSorter(arr, property) {
+  const sorted = [...arr];
+
+  for (let i = 1; i < sorted.length; i++) {
+    for (let j = i; j > 0 && sorted[j][property] > sorted[j - 1][property]; j--) {
+      [sorted[j], sorted[j - 1]] = [sorted[j - 1], sorted[j]];
+    }
+  }
+  return sorted;
+}
 
