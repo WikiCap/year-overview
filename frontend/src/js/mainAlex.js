@@ -17,7 +17,6 @@ const wikiTpl = document.querySelector("#wikiCardTpl");
 const heroText = document.querySelector("#heroText");
 const tpl = wikiTpl;
 
-
 const recapHeader = document.querySelector("#recapHeader");
 const yearBadge = document.querySelector("#yearBadge");
 const submitBtn = document.querySelector("#submitBtn");
@@ -121,8 +120,21 @@ function setStatus(text, kind = "info") {
 
   if (kind === "loading") {
     statusEl.innerHTML = `
-      <div class="status-row">
-        <div class="loader" aria-label="Loading"></div>
+      <div class="status-flex">
+        <div class="loader" aria-label="Loading">
+          <svg class="infinite-svg" viewBox="0 0 200 100" aria-hidden="true">
+          <defs>
+            <linearGradient id="wcGrad" x1="0" y1="0" x2="200" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="var(--apricot)"/>
+              <stop offset="50%" stop-color="var(--vermilion)"/>
+              <stop offset="100%" stop-color="var(--primary)"/>
+            </linearGradient>
+          </defs>
+          <path class="infinity-track" d="M20,50 C40,20 80,20 100,50 C120,80 160,80 180,50 C160,20 120,20 100,50 C80,80 40,80 20,50" />
+
+            <path class="infinity-path" stroke="url(#wcGrad)" d="M20,50 C40,20 80,20 100,50 C120,80 160,80 180,50 C160,20 120,20 100,50 C80,80 40,80 20,50" />
+          </svg>
+        </div>
         <span class="status-text">${text}</span>
       </div>
     `;
@@ -205,7 +217,7 @@ form.addEventListener("submit", async (e) => {
 
   clearNobel();
   clearResults();
-  setStatus("Fetching data...", "loading");
+  setStatus("", "loading");
   submitBtn.disabled = true;
   submitBtn.classList.add("opacity-70", "cursor-not-allowed");
 
@@ -222,6 +234,7 @@ form.addEventListener("submit", async (e) => {
     const data = await fetchYear(year);
 
     const eventsByMonth = data?.events_by_month ?? {};
+    const entries = Object.entries(eventsByMonth);
     const hasEvents = Object.keys(eventsByMonth).length > 0;
 
     if (!hasEvents) {
@@ -231,7 +244,7 @@ form.addEventListener("submit", async (e) => {
 
     // Update hero text
     heroText.textContent = `The year was ${year}`;
-    const entries = Object.entries(eventsByMonth);
+    //const entries = Object.entries(eventsByMonth);
 
 
 

@@ -1,5 +1,6 @@
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
 
 @source "../index.html";
 @source "../**/*.html";
@@ -37,6 +38,45 @@
 
 @layer utilities {
   /* Scroll Reveal Animations */
+
+  .loader{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    height: 100px;
+  }
+
+  .infinite-svg{
+    width: 300px;
+    height: 100px;
+  }
+
+  .infinity-track{
+    fill: none;
+    stroke: var(--cream);
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.35;
+  }
+
+  .infinity-path{
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    stroke-dasharray: 120 380;
+    stroke-dashoffset: 0;
+    animation: infinity-dash 1.4s linear infinite;
+
+  }
+  @keyframes infinity-dash {
+    72.5% {opacity: 1;}
+    to {stroke-dashoffset: -500;}
+  }
+
   .reveal-left, .reveal-right {
     opacity: 0;
     filter: blur(6px);
