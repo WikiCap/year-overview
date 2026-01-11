@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>test</title>
-    <link rel="stylesheet" href="dist/output.css" />
+    <title>WikiCap</title>
+    <link rel="stylesheet" href="public/output.css" />
   </head>
   <body class="page-shell">
     <main class="page-main-wide">
@@ -20,7 +20,7 @@
         <button id="submitBtn" type="submit" class="btn-primary shadow-cta-teal hover-lift">Get year</button>
       </form>
       <div id="status" class="status-text"></div>
-      <h1 class="year-title"><span> </span><span id="heroText"></span></h1>
+      <h1 class="year-title"><span id="heroText"></span></h1>
 
       <section class="space-y-4 page-main-centered">
         <div id="recapHeader" class="hidden items-center justify-between">
@@ -49,10 +49,11 @@
         </div>
       </template>
     </section>
+
       <!-- Nobel prize del -->
       <section class="hidden space-y-6 pt-10" id="nobelSection">
         <div class="flex items-center justify-between">
-          <p class="section-label">Nobel Price Winners Of The Year</p>
+          <p class="section-label">Nobel Prize Winners Of The Year</p>
           <span id="stats">Nobel Prize</span>
         </div>
 
@@ -69,7 +70,7 @@
         </template>
       </section>
 
-      <section>
+      <section class="hidden space-y-10 pt-10 page-main-wide flex-row" id="entertainmentSection">
         <div id="highlightsSection"></div>
         <div id="movieSection"></div>
         <div id="seriesSection"></div>
