@@ -737,10 +737,8 @@
      ============================================ */
 
   .timeline-wrap {
-  /* tidslinje */
-    .timeline-wrap{
-      position: relative;
-    }
+    position: relative;
+  }
 
   .timeline-line {
     position: absolute;
@@ -780,6 +778,5 @@
   .timeline-wrap .component-card {
     position: relative;
     z-index: 1;
-  }
   }
 }
