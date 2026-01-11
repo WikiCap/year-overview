@@ -79,6 +79,8 @@ Depending on the year, WikiCap fetches and renders:
 
 ## Project Structure
 
+```text
+.
 ├── .venv/
 ├── .envScriptsactivate
 ├── backend/
@@ -113,6 +115,7 @@ Depending on the year, WikiCap fetches and renders:
 │   ├── package.json
 │   ├── README.md
 └── .gitignore
+
 
 
 ## Get Started
