@@ -16,7 +16,6 @@ The results are presented in an artsy, interactive timeline.
   - [Installation](#installation)
   - [Run Locally](#run-locally)
 - [Enviroment Variables](#enviroment-variables)
-- [Commands](#commands)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -178,8 +177,8 @@ pip install -r requirements.txt
 ## 4. **Create your .env file in the backend folder**
 
 Create `backend/.env` and add your API keys.
-Create backend/.env and add your API keys (see #Environment Variables
-)
+Create backend/.env and add your API keys [See Enviorment Variables](#enviroment-variables)
+
 
 ---
 
@@ -198,8 +197,11 @@ npx tailwindcss \
   -o frontend/dist/output.css \
   --watch
 ```
+---
 
-6. **Start the FastAPI server**
+## 7. **Run locally**
+
+**Start the FastAPI server**
 
 ```bash
 cd backend
@@ -208,7 +210,25 @@ uvicorn app.main:app --reload
 
 ---
 
-## Run Locally
+## 8. **Enviroment Variables**
+
+#### Create ´backend/.env``
+
+# Last.fm
+LASTFM_API_KEY=YOUR_LASTFM_KEY
+
+# TMDB
+TMDB_API_KEY=YOUR_TMDB_KEY
+
+
+Notes:
+
+-Wikipedia endpoints usually don’t require an API key.
+
+-Keep .env out of git (add it to .gitignore).
+
+---
+## 9. **Troubleshooting**
 
 **Open your frontend (depending on your setup):**
 
