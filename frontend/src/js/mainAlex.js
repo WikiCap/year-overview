@@ -119,7 +119,11 @@ function setStatus(text, kind = "info") {
   if (kind === "loading") {
     statusEl.innerHTML = `
       <div class="status-row">
-        <div class="loader" aria-label="Loading"></div>
+        <div class = "loader" aria-label = "Loading">
+          <svg viewBox="0 0 100 100" width="40" height="40" role="img" aria-hidden="true">
+            <circle class="svgbox" cx="50" cy="50" r="40"></circle>
+          </svg>
+        </div>
         <span class="status-text">${text}</span>
       </div>
     `;
@@ -202,7 +206,7 @@ form.addEventListener("submit", async (e) => {
 
   clearNobel();
   clearResults();
-  setStatus("Fetching data...", "loading");
+  setStatus("", "loading");
   submitBtn.disabled = true;
   submitBtn.classList.add("opacity-70", "cursor-not-allowed");
 
@@ -229,7 +233,7 @@ form.addEventListener("submit", async (e) => {
     // Update hero text
     heroText.textContent = `The year was ${year}`;
     const entries = Object.entries(eventsByMonth);
-    
+
 
 
     entries.forEach(([month, events], i) => {

@@ -1,5 +1,6 @@
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
 
 @source "../index.html";
 @source "../**/*.html";
@@ -31,6 +32,43 @@
 
 /* gömda scroll event */
 @layer utilities {
+
+
+  .loader{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 32px;
+  }
+
+  .infinite-svg{
+    width: 56px;
+    height: 28px;
+  }
+
+  .infinity-track{
+    fill: none;
+    stroke: var(--cream);
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.35;
+  }
+
+  .infinity-patch{
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+  }
+
+
+
+
+
+
   .reveal-left, .reveal-right {
     opacity: 0;
     will-change: transform, opacity;
