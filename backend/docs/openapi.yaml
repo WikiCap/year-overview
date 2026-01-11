@@ -126,6 +126,38 @@ paths:
         '500':
           description: Internal server error
 
+  /api/v1/year/{year}/nobel:
+    get:
+      summary: Get Nobel Prize laureates for a specific year
+      description: Returns Nobel Prize laureates for the specified year, grouped by category (name, motivation, and image URL when available).
+      tags:
+        - Nobel
+      parameters:
+        - name: year
+          in: path
+          required: true
+          description: The year to retrieve Nobel Prize laureates for
+          schema:
+            type: integer
+            minimum: 1900
+            maximum: 2100
+          example: 2019
+      responses:
+        '200':
+          description: Nobel Prize laureates successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NobelResponse'
+        '400':
+          description: Invalid year parameter
+        '404':
+          description: No Nobel Prize data found for the specified year
+        '429':
+          description: Rate limit exceeded when accessing Nobel Prize data
+        '500':
+          description: Internal server error
+
 components:
   schemas:
     YearResponse:
@@ -278,4 +310,39 @@ components:
           example: Joker
 
 
+    NobelResponse:
+      type: object
+      properties:
+        year:
+          type: integer
+          description: The requested year
+          example: 2019
+        nobel_prizes:
+          $ref: '#/components/schemas/NobelPrizes'
+
+    NobelPrizes:
+      type: object
+      description: Nobel Prize categories mapped to a list of laureates
+      additionalProperties:
+        type: array
+        items:
+          $ref: '#/components/schemas/Laureate'
+
+    Laureate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Laureate name
+          example: "Olga Tokarczuk"
+        motivation:
+          type: string
+          nullable: true
+          description: Prize motivation/justification (if available)
+          example: "for a narrative imagination..."
+        image:
+          type: string
+          nullable: true
+          description: Laureate image URL (if available)
+          example: "https://upload.wikimedia.org/wikipedia/commons/.../Olga_Tokarczuk.jpg"
 
