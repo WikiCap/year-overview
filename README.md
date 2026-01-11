@@ -212,12 +212,12 @@ uvicorn app.main:app --reload
 
 ## 8. **Enviroment Variables**
 
-#### Create ´backend/.env``
+# Create ´backend/.env``
 
-# Last.fm
+#### Last.fm
 LASTFM_API_KEY=YOUR_LASTFM_KEY
 
-# TMDB
+#### TMDB
 TMDB_API_KEY=YOUR_TMDB_KEY
 
 
