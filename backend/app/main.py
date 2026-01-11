@@ -1,3 +1,4 @@
+import base64
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -8,6 +9,8 @@ from app.api.v1.movies import router as movies_router
 from app.api.v1.awards import router as awards_router
 from app.api.v1.wiki import router as wiki_router
 from app.api.v1.nobel import router as nobel_router
+from app.api.v1.billboard import router as billboard_router
+from app.api.v1.music import router as music_router
 
 app = FastAPI()
 
@@ -18,12 +21,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+    
 app.include_router(year_router, prefix="/api/v1")
 app.include_router(movies_router, prefix="/api/v1")
+app.include_router(billboard_router, prefix="/api/v1")
+app.include_router(music_router, prefix="/api/v1")
 app.include_router(awards_router, prefix="/api/v1")
 app.include_router(wiki_router, prefix="/api/v1")
-app.include_router(nobel_router, prefix="/api/v1")
+# app.include_router(nobel_router, prefix="/api/v1")
 
 @app.get("/")
 def read_root():
