@@ -116,13 +116,15 @@ Depending on the year, WikiCap fetches and renders:
 │   ├── README.md
 └── .gitignore
 ```
+
 ---
 
 ## Get Started
 
 ### Requirements
 
-1. **Python Version**: Ensure you have [Python](https://www.python.org/downloads/) 3.10 or higher installed. Check your version by running:
+1. #### Python Version: Ensure you have [Python](https://www.python.org/downloads/) 3.10 or higher installed. Check your version by running:
+
    ```bash
    python3 --version
    ```
@@ -131,18 +133,14 @@ Depending on the year, WikiCap fetches and renders:
    python --version
    ```
 
-   **Node and Npm**
+#### **Node and Npm**
 
-   ```bash
-  node --version
-  ```
-  ```bash
-  npm --version
-  ```
+```bash
+node --version
+npm --version
+```
 
 ---
-
-
 
 ## Installation
 
@@ -151,8 +149,8 @@ Depending on the year, WikiCap fetches and renders:
 git clone <your-repo-url>
 cd <your-repo-folder>
 
-
 ## 2. **Create Backend and activate Venv**
+
 ### MacOS / Linux
 
 ```bash
@@ -174,6 +172,7 @@ python -m venv .venv
 ```bash
 pip install -r requirements.txt
 ```
+
 ---
 
 ## 4. **Create your .env file in the backend folder**
@@ -181,6 +180,7 @@ pip install -r requirements.txt
 Create `backend/.env` and add your API keys.
 Create backend/.env and add your API keys (see #Environment Variables
 )
+
 ---
 
 ## 5. **Install frontend dependencies**
