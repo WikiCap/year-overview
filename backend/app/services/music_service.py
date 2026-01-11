@@ -1,6 +1,7 @@
 from app.clients.music_client import get_spotify_token, get_auth_header, get_songs_by_year, get_artists_by_year
 import base64
 import httpx
+import random
 
 
 def fetch_songs_for_year(year: int):
@@ -18,11 +19,13 @@ def fetch_songs_for_year(year: int):
 
     raw = sorted(
     raw,
-    key=lambda x: x["popularity"],
-    reverse=True)
+    key=lambda x: x["popularity"], # Sortera efter popularitet (högre = mer populär)
+    reverse=True) # Kör listan från högst till lägst
+
+    raw = random.sample(raw, min(len(raw), 10)) # Väljer 10 random låtar från listan
 
     songs = []
-    for item in raw[:10]:
+    for item in raw:
         songs.append({
             "title": item["name"],
             "artist": item["artists"][0]["name"],

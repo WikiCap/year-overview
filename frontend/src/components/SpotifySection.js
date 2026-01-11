@@ -22,13 +22,14 @@ function clearSpotify() {
  * @param {Array} songs an array of song objects
  */
 
-function renderSpotifySongs(songs) {
+function renderSpotifySongs(songs, year) {
     clearSpotify();
     if (!songs || songs.length === 0) return;
+    document.querySelector(".spotify-year-label").textContent = year;
 
-    spotifySection.classList.remove("hidden");
+    spotifySection.classList.remove("hidden"); //Tar bort attributet "hidden" för att visa sektionen
 
-    for (const song of songs) {
+    for (const song of songs) {  //Skapar ett kort för varje låt i Songs
         const card = spotifyCardTpl.content.firstElementChild.cloneNode(true);
 
         card.querySelector(".song-title").textContent = song.title;
@@ -39,7 +40,7 @@ function renderSpotifySongs(songs) {
         const songLink = card.querySelector(".song-link");
         songLink.href = song.spotifyUrl;
 
-        const albumImage = card.querySelector(".album-image");
+        const albumImage = card.querySelector(".spotify-album-image");
         albumImage.href = song.spotifyUrl;
 
         const image = card.querySelector("img");
@@ -52,11 +53,37 @@ function renderSpotifySongs(songs) {
         }
     }
 
-document.getElementById("yearForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const year = document.getElementById("yearInput").value.trim();
-  if (!year) return;
+    document.getElementById("yearForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const year = document.getElementById("yearInput").value.trim();
+        if (!year) return;
+        
+        const songs = await fetchSpotifySongs(year);
+        renderSpotifySongs(songs, year);
 
-  const songs = await fetchSpotifySongs(year);
-  renderSpotifySongs(songs);
-});
+        observeSpotifyCards();
+    });
+    
+
+    function observeSpotifyCards() { //Observer för att fadea in/out korten vid scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("opacity-100");  // Gör kortet synligt
+                entry.target.classList.remove("opacity-0");
+            } else {
+                entry.target.classList.add("opacity-0");
+                entry.target.classList.remove("opacity-100");
+            }
+            
+            });
+        }, { threshold: 0.6 //Hur mycket av kortet som måste vara synligt för att trigga observern
+    });
+    const spotifyCards = document.querySelectorAll(".spotify-card-wrapper");
+
+    spotifyCards.forEach(card => {
+        observer.observe(card);
+    });
+
+}
+    
