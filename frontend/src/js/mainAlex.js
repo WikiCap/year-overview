@@ -1,5 +1,4 @@
-import { renderHighlights, renderMovies, renderSeries } from "../components/MediaSection.js";
-import { renderWikiSection } from "../components/WikiSection.js";
+
 
 const API_BASE = "http://127.0.0.1:8000";
 

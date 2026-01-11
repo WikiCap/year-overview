@@ -1,5 +1,5 @@
-import { renderHighlights, renderMovies, renderSeries } from "../components/MediaSection.js";
-import { renderWikiSection } from "../components/WikiSection.js";
+import { renderHighlights, renderMovies, renderSeries } from "./MediaSection.js";
+import { renderWikiSection } from "./WikiSection.js";
 
 const API_BASE = "http://127.0.0.1:8000";
 
@@ -28,7 +28,7 @@ let cleanupArtistAutoReveal = null;
 
 function setupArtistAutoReveal({
   initialVisible = 3,
-  delayMs = 1000, //styr att det blir 1 sekund mellan varje nytt kort. 
+  delayMs = 1000, //styr att det blir 1 sekund mellan varje nytt kort.
   durationMs = 1100, //styr så att animationen tar 1,1 sek. (långsammare)
 
 } = {}) {
@@ -52,7 +52,7 @@ function setupArtistAutoReveal({
   const firstCount = Math.min(initialVisible, cards.length);
   for (let index = 0; index < firstCount; index++) showCard(cards[index]);
 
-  //Visa upp resterande kort automatiskt. 
+  //Visa upp resterande kort automatiskt.
   let index = firstCount;
   const timer = setInterval(() => {
     if (index >= cards.length) {
@@ -92,7 +92,7 @@ const observer = new IntersectionObserver(entries => {
     );
 
   function clearTopArtist() {
-  //if (cleanupArtistPin) cleanupArtistPin();  
+  //if (cleanupArtistPin) cleanupArtistPin();
   if (cleanupArtistAutoReveal) cleanupArtistAutoReveal();
   if (ArtistGrid) ArtistGrid.innerHTML = "";
   if (ArtistSection) ArtistSection.classList.add("hidden");
@@ -182,7 +182,7 @@ async function renderTopArtist(artistData, year) {
       if (cleanUrl) img.src = cleanUrl;
     }
 
-    
+
     const toptracks = topTracksByArtist.get(artistName) ?? [];
     renderTopSongs(toptracks, node);
 
@@ -202,7 +202,7 @@ async function renderTopArtist(artistData, year) {
   });
 }
 
-  
+
   async function fetchBillboardTopSong(year, limit=5) {
     const res = await fetch(
       `${API_BASE}/api/v1/year/${year}/billboard/artist/top-songs?limit=${limit}`);
@@ -216,7 +216,7 @@ async function renderTopArtist(artistData, year) {
     if (!songs || songs.length === 0) return;
 
     const listOfSongs = container.querySelector(".songs") ?? container;
-    listOfSongs.innerHTML = ""; 
+    listOfSongs.innerHTML = "";
 
     const heading = document.createElement("p");
     heading.className = "mt-2 text-xs font-semibold tracking-wide uppercase text-slate-900";
@@ -338,7 +338,7 @@ form.addEventListener("submit", async (e) => {
     await renderTopArtist(ArtistData,year);
 
     console.log(ArtistData);
-    
+
      // Update hero text
       heroText.textContent = `Top artists of the year ${year}`
 
