@@ -135,10 +135,10 @@ Depending on the year, WikiCap fetches and renders:
 
 #### **Node and Npm**
 
-```bash
-node --version
-npm --version
-```
+  ```bash
+  node --version
+  npm --version
+  ```
 
 ---
 
