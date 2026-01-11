@@ -123,7 +123,7 @@ Depending on the year, WikiCap fetches and renders:
 
 ### Requirements
 
-1. #### Python Version: Ensure you have [Python](https://www.python.org/downloads/) 3.10 or higher installed. Check your version by running:
+#### Python Version: Ensure you have [Python](https://www.python.org/downloads/) 3.10 or higher installed. Check your version by running:
 
    ```bash
    python3 --version
