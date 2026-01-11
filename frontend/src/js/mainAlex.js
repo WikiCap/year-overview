@@ -118,10 +118,19 @@ function setStatus(text, kind = "info") {
 
   if (kind === "loading") {
     statusEl.innerHTML = `
-      <div class="status-row">
-        <div class = "loader" aria-label = "Loading">
-          <svg viewBox="0 0 100 100" width="40" height="40" role="img" aria-hidden="true">
-            <circle class="svgbox" cx="50" cy="50" r="40"></circle>
+      <div class="status-flex">
+        <div class="loader" aria-label="Loading">
+          <svg class="infinite-svg" viewBox="0 0 200 100" aria-hidden="true">
+          <defs>
+            <linearGradient id="wcGrad" x1="0" y1="0" x2="200" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="var(--apricot)"/>
+              <stop offset="50%" stop-color="var(--vermilion)"/>
+              <stop offset="100%" stop-color="var(--primary)"/>
+            </linearGradient>
+          </defs>
+          <path class="infinity-track" d="M20,50 C40,20 80,20 100,50 C120,80 160,80 180,50 C160,20 120,20 100,50 C80,80 40,80 20,50" />
+
+            <path class="infinity-path" stroke="url(#wcGrad)" d="M20,50 C40,20 80,20 100,50 C120,80 160,80 180,50 C160,20 120,20 100,50 C80,80 40,80 20,50" />
           </svg>
         </div>
         <span class="status-text">${text}</span>
