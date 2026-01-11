@@ -29,7 +29,7 @@ let cleanupArtistAutoReveal = null;
 function setupArtistAutoReveal({
   initialVisible = 3,
   delayMs = 1000, //styr att det blir 1 sekund mellan varje nytt kort. 
-  durationMs = 1100, //styr så att animationen tar 1,2 sek. (långsammare)
+  durationMs = 1100, //styr så att animationen tar 1,1 sek. (långsammare)
 
 } = {}) {
   if (cleanupArtistAutoReveal) cleanupArtistAutoReveal();
