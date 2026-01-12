@@ -12,6 +12,7 @@ from app.clients.awards_client import (
     get_oscar_category_details
 )
 from app.clients.movie_client import search_movie_by_title, search_person_by_name
+import asyncio
 import re
 
 OSCAR_CATEGORY_MAP = {
@@ -105,45 +106,61 @@ async def fetch_oscar_highlights(year: int):
     edition_id = editions[0]["id"]
     categories = await get_oscar_categories(edition_id)
 
+    relevant_categories = [
+        cat for cat in categories
+        if cat.get("name") in OSCAR_CATEGORY_MAP
+    ]
+
+    # FIXED: Fetch all category details concurrently
+    category_details = await asyncio.gather(
+        *[get_oscar_category_details(edition_id, cat["id"]) for cat in relevant_categories],
+        return_exceptions=True
+    )
+
     oscars = {}
 
-    for category in categories:
+    async def process_category(category, nominees):
+        if isinstance(nominees, Exception):
+            return None
+
         category_name = category.get("name")
-
-        if category_name not in OSCAR_CATEGORY_MAP:
-            continue
-
         key = OSCAR_CATEGORY_MAP[category_name]
-        nominees = await get_oscar_category_details(edition_id, category["id"])
 
         winner = None
-
         for nominee in nominees:
             if nominee.get("winner") is True:
                 winner = nominee
                 break
 
         if not winner:
-            continue
+            return None
 
         if key == "bestPicture":
             movie_title = winner.get("name")
             movie_data = await search_movie_by_title(movie_title, year)
-
-            oscars[key] = {
+            return (key, {
                 "title": movie_title,
                 "poster": movie_data.get("poster_path") if movie_data else None,
-            }
+            })
         else:
             person_name = winner.get("name")
             movie_title = extract_movie_title(winner.get("more", ""))
             person_data = await search_person_by_name(person_name)
-
-            oscars[key] = {
+            return (key, {
                 "name": person_name,
                 "movie": movie_title,
                 "image": person_data.get("profile_path") if person_data else None,
-            }
+            })
+
+    results = await asyncio.gather(
+        *[process_category(cat, details) for cat, details in zip(relevant_categories, category_details)],
+        return_exceptions=True
+    )
+
+    for result in results:
+        if result and not isinstance(result, Exception):
+            key, data = result
+            oscars[key] = data
 
     return {
         "year": year,

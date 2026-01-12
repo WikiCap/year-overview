@@ -1,5 +1,6 @@
 from app.services.artist_of_the_year import get_artist_of_the_year
 from app.clients.billboard_artist_client import get_hit_song
+import asyncio
 
           
 async def get_year_with_hit_songs(year: int) -> dict:
@@ -34,14 +35,22 @@ async def get_year_with_hit_songs(year: int) -> dict:
         "artists": []
     }
 
-    for name in artist_names:
+    async def fetch_artist_songs(name: str):
         top_songs = await get_hit_song(name, 5)
         if not top_songs:
-            continue
-
-        result["artists"].append({
+            return None
+        return {
             "artist": name,
             "top_tracks": top_songs
-        })
+        }
+
+    artist_results = await asyncio.gather(
+        *[fetch_artist_songs(name) for name in artist_names],
+        return_exceptions=True
+    )
+
+    for artist_data in artist_results:
+        if artist_data and not isinstance(artist_data, Exception):
+            result["artists"].append(artist_data)
 
     return result
