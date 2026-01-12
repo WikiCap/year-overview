@@ -176,7 +176,6 @@ function renderMonthCard({ month, year, events, index }) {
   card.dataset.reveal = isOdd ? "left" : "right";
 
   const title = node.querySelector(".monthTitle");
-  const chip = node.querySelector(".monthChip");
   const list = node.querySelector(".monthList");
 
   title.textContent = `${month} ${year}`;
@@ -264,7 +263,7 @@ form.addEventListener("submit", async (e) => {
       setTimeout(() => {
         const movieCards = movieSection.querySelectorAll('.movie-card.reveal');
         const seriesCards = seriesSection.querySelectorAll('.series-card.reveal');
-        
+
         movieCards.forEach(card => observer.observe(card));
         seriesCards.forEach(card => observer.observe(card));
       }, 0);
