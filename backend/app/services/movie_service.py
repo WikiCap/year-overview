@@ -5,18 +5,18 @@ def fetch_movies_for_year(year: int):
     raw = get_top_movies_by_year(year)
 
     movies = []
-    for item in raw.get("results", [])[:10]:
+    for item in raw.get("results", [])[:8]:
         movies.append({
             "title": item["title"],
             "rating": round(item["vote_average"], 1),
             "votes": item["vote_count"],
             "poster": item["poster_path"],
-            "releaseDate": item["release_date"]
+            "release_date": item["release_date"]
         })
 
     return {
         "year": year,
-        "topMovies": movies,
+        "top_movies": movies,
         "source": "TMDb"
     }
 
@@ -31,18 +31,18 @@ def fetch_series_for_year(year: int):
     )
 
     series = []
-    for item in ranked[:10]:
+    for item in ranked[:8]:
         series.append({
             "title": item["name"],
             "rating": round(item["vote_average"], 1),
             "votes": item["vote_count"],
             "poster": item["poster_path"],
-            "releaseDate": item.get("first_air_date"),
+            "release_date": item.get("first_air_date"),
         })
 
     return {
         "year": year,
-        "topSeries": series,
+        "top_series": series,
         "source": "TMDb",
     }
 
