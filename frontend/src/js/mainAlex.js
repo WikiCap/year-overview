@@ -177,7 +177,7 @@ function renderMonthCard({ month, year, events, index }) {
     "duration-700",
     "ease-out",
     "blur-sm",
-    isOdd ? "-translate-x-10" : "translate-x-10"
+    isLeft ? "-translate-x-10" : "translate-x-10"
   );
 
 
