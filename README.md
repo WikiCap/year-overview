@@ -37,6 +37,7 @@ The results are presented in an artsy, interactive timeline.
 - Wikipedia API – for notable events & general info
 - Last.fm API – for top tracks / artists by year
 - TMDB API – for popular movies by year
+- Spotify - for popular songs by year
 
 ---
 

@@ -31,7 +31,6 @@ def fetch_songs_for_year(year: int):
             "artist": item["artists"][0]["name"],
             "album": item["album"]["name"],
             "releaseDate": item["album"]["release_date"],
-            "previewUrl": item["preview_url"],
             "spotifyUrl": item["external_urls"]["spotify"],
             "image": item["album"]["images"][0]["url"],
             
@@ -43,7 +42,7 @@ def fetch_songs_for_year(year: int):
         "source": "Spotify"
     }
 
-def fetch_artists_for_year(year: int):
+def fetch_artists_for_year(year: int): # Används inte
     """
     Fetches relevant artists from Spotify for a specific year.
     Args:

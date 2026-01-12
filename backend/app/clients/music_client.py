@@ -7,11 +7,8 @@ import httpx
 SPOTIFY_BASE_URL = "https://api.spotify.com/v1/search"
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
 
-
 spotify_client_id = os.getenv("SPOTIFY_CLIENT_ID")
 spotify_client_secret = os.getenv("SPOTIFY_CLIENT_SECRET")
-
-
 
 def get_spotify_token():
     """
@@ -70,7 +67,7 @@ def get_artists_by_year(year: int, token):
     
     return response.json()["artists"]["items"]
 
-def get_songs_by_year(year: int, token):
+def get_songs_by_year(year: int, headers):
     """
     Fetches songs from Spotify released in a specific year.
     Args:
@@ -82,16 +79,18 @@ def get_songs_by_year(year: int, token):
 
     response = httpx.get(
         SPOTIFY_BASE_URL,
-        headers=token,
+        headers=headers,
         params={
             "q": f"year:{year}",
             "type": "track",
             "limit": 30,
         }
     )
+    response.raise_for_status()
+
     songs = response.json()["tracks"]["items"]
     if not songs:
         print("No songs found for the given year.")
-        return None
+        return []
     
     return songs
