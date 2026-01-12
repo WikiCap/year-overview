@@ -75,13 +75,24 @@ const submitBtn = document.querySelector("#submitBtn");
  */
 const entertainmentSection = document.querySelector("#entertainmentSection");
 
-
-
-
-
+/** Section containing Nobel Prize-related content.
+ * @type {HTMLElement}
+ */
 const nobelSection = document.querySelector("#nobelSection");
+
+/** Grid container where Nobel winner cards are rendered.
+ * @type {HTMLElement}
+ */
 const nobelGrid = document.querySelector("#nobelGrid");
+
+/** Template used for cloning individual Nobel winner cards.
+ * @type {HTMLTemplateElement}
+ */
 const nobelTpl = document.querySelector("#nobelSection template#nobelCardTpl");
+
+/** Element displaying statistics or status messages for the Nobel section.
+ * @type {HTMLElement}
+ */
 const statsEl = document.querySelector("#stats");
 
 /** IntersectionObserver that reveals elements,
@@ -112,13 +123,32 @@ const observer = new IntersectionObserver(entries => {
 {  threshold: 0.15}
 
     );
-
+  
+  /**
+ * Clears all Nobel‑related content from the page.
+ *
+ * - Empties the grid that displays Nobel results.
+ * - Hides the Nobel section so it’s not visible to the user.
+ * - Resets the statistics element by removing any previous text.
+ */
   function clearNobel() {
   if (nobelGrid) nobelGrid.innerHTML = "";
   if (nobelSection) nobelSection.classList.add("hidden");
   if (statsEl) statsEl.textContent = "";
 }
-
+/**
+ * Renders a list of Nobel Prize winners into the UI.
+ *
+ * - Clears any previously displayed Nobel content.
+ * - Transforms the incoming `nobelData` object into a flat list of winners.
+ * - Reveals the Nobel section and inserts one card per winner using a template.
+ * - Applies left/right reveal animations based on each card’s index.
+ * - Fills each card with the winner’s name, category, motivation, and image
+ *   (falling back to a default Nobel medal image when needed).
+ * - Observes each card with an IntersectionObserver to trigger animations.
+ *
+ * The function exits early if required DOM elements or data are missing.
+ */
   function renderNobel(nobelData) {
     clearNobel();
 
@@ -172,6 +202,18 @@ const observer = new IntersectionObserver(entries => {
     });
   }
 
+
+/**
+ * Updates the status area with a message or a loading indicator.
+ *
+ * - Resets the status element before displaying new content.
+ * - When `kind` is `"loading"`, shows an animated infinity‑loop loader
+ *   together with the provided text.
+ * - For `"error"`, `"success"`, or `"info"`, creates a styled text node
+ *   and appends it to the status element.
+ *
+ * The function ensures consistent formatting and styling for all status updates.
+ */  
 function setStatus(text, kind = "info") {
   statusEl.className = "text-center";
   statusEl.innerHTML = "";

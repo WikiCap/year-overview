@@ -83,8 +83,7 @@ function setupArtistAutoReveal({
  * Removes any running auto‑reveal animation, empties the artist grid,
  * hides the artist section, and resets the stats text.
  */  
-  function clearTopArtist() {
-  //if (cleanupArtistPin) cleanupArtistPin();  
+  function clearTopArtist() { 
   if (cleanupArtistAutoReveal) cleanupArtistAutoReveal();
   if (ArtistGrid) ArtistGrid.innerHTML = "";
   if (ArtistSection) ArtistSection.classList.add("hidden");

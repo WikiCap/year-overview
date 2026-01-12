@@ -9,17 +9,21 @@ async def get_billboard_page(year: int) -> str | None:
     """
     Retrieves the HTML Billboard Hot 100 Wikipedia page for a given year.
 
-    This function selects the correct Wikipedia URL based on the year,
-    sends an HTTP GET request and returns the page's HTML content as a string.
-    If the request fails or the server doesn't respond with a 200 status code, 
+    Selects the correct Wikipedia URL based on the year,
+    sends an HTTP GET request to fetch the page. If the request succeeds, the page's HTML content 
+    is returned as a string. If the request fails or the server doesn't respond with a 200 status code, 
     the function returns None.
 
-    Args:
-        year (int): The year for which to retrieve the Billboard Hot 100 page.
+    Parameters
+    -----------
+        year: int
+            The year for which to retrieve the Billboard Hot 100 page.
 
-    Returns:
-        str or None: The HTML content of the Wikipedia page if the request succeeds,
-        otherwise None.
+    Returns
+    --------
+        str or None: 
+            The HTML content of the Wikipedia page if the request succeeds,
+            otherwise None.
     """
     
     if year >=2000:
@@ -42,19 +46,23 @@ async def get_artist_lastfm(artist_name: str, limit: int=9) ->list[str]:
     """
     Search for artists by name using the Last.fm API.
 
-    This function calls Last.fm's ``artist.search`` endpoint and extracts a list
-    of matching artist names. If the request fails, times out, or expected data
-    is missing in the API response, an empty list is returned.
+    This asynchronous function calls Last.fm's ``"artist.search"`` endpoint 
+    and extracts a list of matching artist names. If the API resonse is missing 
+    expected data, an empty list is returned.
 
-    Args:
-        artist_name (str): The name of the artist to search for.
-        limit (int): Maximum number of artists to request from the API. Defaults to 9.
+    Parameters
+    -----------
+        artist_name: str
+            The name of the artist to search for.
+        limit: int, optional
+            Maximum number of artists to request from the API. Defaults to 9.
 
-    Returns:
-        list[str]: A list of matching artist names. Returns an empty list if no
-        artists are found or the request fails.
+    Returns
+    --------
+        list[str]: 
+            A list of matching artist names. Returns an empty list if the API
+            response does not contain the expected structure. 
     """
-
     params = {
         "method": "artist.search",
         "artist": artist_name,
@@ -93,18 +101,24 @@ async def get_artist_lastfm(artist_name: str, limit: int=9) ->list[str]:
 
 async def get_hit_song(artist: str, limit: int=5) -> list[dict]:
     """
-    Retrive an artist's hit songs from the Last.fm API. 
+    Retrieve an artist's hit songs from the Last.fm API. 
     
-    This fucntion calls LastFm's "artist.gettoptracks" endpoint to extract the most popluar songs for the given artist.
+    This asynchronous fucntion calls LastFm's ``"artist.gettoptracks"`` endpoint to extract the most popluar songs for the given artist.
     If the request fails, times out or data is missing from the API response, an empty list is returned.
     
-    Args:
-        artist (str): The name of the artist.
-        limit (int): Maximum number of songss to request from the API. Defaults to 5.
+    Parameters
+    ----------
+        artist: str
+            The name of the artist.
+        limit: int, optional
+            Maximum number of songss to request from the API. Defaults to 5.
         
-    Returns: 
-        list[dict]: A list of dictionaries containing song titles. 
-        Returns an empty list if no songs are found or the request fails.    
+    Returns
+    ------- 
+        list[dict]: 
+            A list of dictionaries containing song titles under the key ``"title"``.
+        Returns an empty list if the API response does not include the expected 
+        structure or the request fails.    
     """
     
     

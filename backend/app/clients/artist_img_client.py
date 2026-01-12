@@ -13,10 +13,12 @@ def fetch_wiki_image(title:str) -> str | None:
     thumbnail or original image URL if available. 
     
     Parameters:
-        title (str):
+    ----------
+        title: str
             The title of the Wikipedia page to look up.
 
     Returns:
+    -------
         str or None:
             The URL of the page's thumbnail or original image if available;
             otherwise, None.
@@ -30,7 +32,7 @@ def fetch_wiki_image(title:str) -> str | None:
     data = response.json()
     if "thumbnail" in data and data["thumbnail"].get("source"):
         return data["thumbnail"]["source"]
-    if "originalimage" in data and data["orginalimage"].get("source"):
+    if "originalimage" in data and data["originalimage"].get("source"):
         return data["originalimage"]["source"]
     
     return None 

@@ -10,14 +10,18 @@ def find_artist_column(table_data: list[str]) -> int| None:
     Identify the column in a table header that corresponds to artist information.
 
     The function iterates through a list of header strings,
-    and returns the index of the first one containing the word "artist". 
+    and returns the index of the first one containing the word ``"artist"``. 
     If no matching header is found, None is returned.
 
-    Args:
-        table_data (list[str]): A list of column header strings.
+    Parameters
+    ----------
+        table_data:  list[str]
+            A list of column header strings.
 
-    Returns:
-        int or None: The index of the column containing "artist", or None if
+    Returns
+    -------
+        int or None: 
+            The index of the column containing ``"artist"``, or None if
         no matching column is found.
     """
     for column_index, header in enumerate(table_data):
@@ -31,16 +35,20 @@ async def get_artist_of_the_year(year: int) -> dict:
     """
     Extracts artist names from the Billboard Hot 100 Wikipedia Page for a given year.
     
-    The function fetches the page, finds the first table with an "Artist" column, 
-    and extracts all artist names from that column removing duplicates while keeping the original order.
-    The function always returns a dictionary.
+    The asynchronous function fetches the relevant Wikipedia page, locates the first table with an ``"Artist"`` column, 
+    and extracts all artist names from that column. Duplicates are removed while keeping the original order.
+    The function always returns a dictionary containing the year and a list of extracted artist names.
     
-    Args:
-        year (int): The year for which to retrieve artist information.
+    Parameters
+    ----------
+        year: int
+            The year for which to retrieve artist information.
 
-    Returns:
-        dict: A dictionary containing the year, a list of artist names,
-        and optionally an error message if parsing fails.
+    Returns
+    --------
+        dict: 
+            A dictionary containing the year, a list of extracted artist names.
+            If no suitable table or artist column is found, the ``"artists"`` list will be empty.
     """
     html = await get_billboard_page(year)
 
@@ -103,20 +111,23 @@ async def get_artist_of_the_year(year: int) -> dict:
     
 def add_artist_images( year_data: dict, fetch_image: Callable[[str], str | None]) -> dict: 
     """
-    Add image URLs to each artist in the year-data dictionary. 
+    Add image URLs to each artist in the provided year-data. 
     
-    This function looks up an image for every artist using the `fetch_image`function. 
+    This function iterates through the list of artists in ``"year_data"`` and uses the 
+    ``"fetch_image"`` callable to look up an image URL for each artist. 
     It also has a simple cache in-memory to avoid fetching the same artist image multiple times. 
     
-    Args: 
-        year_data (dict):
-            A dicitionary that includes an "artist_list".
-        fetch_image(Callable[[str], str| None]):
+    Parameters
+    ---------- 
+        year_data: dict
+            A dicitionary that includes an ``"artist_list"``.
+        fetch_image: Callable[[str], str| None]
             Returns an image URL for an artist or None.
              
-    Returns:
+    Returns
+    -------
         dict: 
-            A copy of `year_data` with an added "artists_with_images" list.
+            A copy of ``"year_data"`` with an added ``"artists_with_images"`` key.
     """
     artist_list = year_data.get("artists", []) 
     

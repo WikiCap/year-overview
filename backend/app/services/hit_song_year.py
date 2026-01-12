@@ -5,16 +5,22 @@ import asyncio
           
 async def get_year_with_hit_songs(year: int) -> dict:
     """
-    Combines artists of a given year with their hit songs. 
+    Combine the artists of a given year with their top songs. 
     
-    Retrives artist for the specified year using get_artrist_of_the_year function.
-    Then feches each artist's top hit songs using get_hit_song function. 
+    This asynchronous function retrieves the list of artist for the specified year 
+    using ``"get_artrist_of_the_year"`` function. 
+    And then feches each artist's top hit songs using ``"get_hit_song"`` function. 
     
-    Args:
-        year (int): The year for which artists and songs to be retrieved.
+    Parameters
+    ----------
+        year: int
+            The year for which artists and songs to be retrieved.
 
-    :Returns: 
-        dict: A dictionary containing the year, artist names and their top songs.
+    Returns
+    -------
+        dict: 
+            A dictionary containing the year, artist names and their top songs.
+            If no artists are found, the ``"artists"`` list will be empty.
     """   
    
     artists_payload = await get_artist_of_the_year(year)
