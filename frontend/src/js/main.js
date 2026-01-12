@@ -1,6 +1,6 @@
-import { renderHighlights, renderMovies, renderSeries } from "../components/MediaSection.js";
-import { renderWikiSection } from "../components/WikiSection.js";
-import { renderNobel, clearNobel } from "../components/NobelSection.js";
+import { renderHighlights, renderMovies, renderSeries } from "./components/MediaSection.js";
+import { renderWikiSection } from "./components/WikiSection.js";
+import { renderNobel, clearNobel } from "./components/NobelSection.js";
 
 const API_BASE = "http://127.0.0.1:8000";
 
@@ -15,11 +15,7 @@ const movieSection = document.querySelector("#movieSection");
 const seriesSection = document.querySelector("#seriesSection");
 
 const wikiTpl = document.querySelector("#wikiCardTpl");
-const wikiSection = document.querySelector("#wikiSection");
-const wikiStatsEl = document.querySelector("#wikiStats");
 const heroText = document.querySelector("#heroText");
-
-
 
 const recapHeader = document.querySelector("#recapHeader");
 const yearBadge = document.querySelector("#yearBadge");
