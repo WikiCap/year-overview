@@ -82,5 +82,5 @@ async def get_year(year: int):
         "billboard_top_artists": billboard_artists,
         "billboard_artist_top_songs": billboard_songs,
         "nobel_prizes": nobel,
-        "spotify-songs": fetch_songs_for_year(year)
+        "spotify_songs": fetch_songs_for_year(year)
     }
