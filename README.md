@@ -194,7 +194,7 @@ npm install
 ```bash
 npx tailwindcss \
   -i frontend/src/css/input.css \
-  -o frontend/dist/output.css \
+  -o frontend/public/output.css \
   --watch
 ```
 ---
