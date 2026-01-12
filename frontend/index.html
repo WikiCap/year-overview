@@ -67,25 +67,22 @@
 
     <section id="ArtistSection" class="hidden relative">
   <!-- Sticky viewport -->
-  <div class="sticky top-0 h-screen flex items-start pt-8">
+  <div class="pt-8">
     <div class="mx-auto w-full max-w-9xl px-4">
       <div class="flex items-center justify-between mb-6">
-        <p class="section-label">Artist of the year</p>
-        <span id="artistStats" class="hidden">Top Artist</span>
       </div>
 
-  <div class="artist-card-label">
-    <p class="top-artist-label">Top Artist of the year:</p>
-    <p class="artist-year-label"></p>
-    <div class="artist-divider"></div>
+  <div class="artist-card-label flex items-center gap-2 mb-6 flex-nowrap">
+  <span class="top-artist-label whitespace-nowrap">Top Artists of the year:</span>
+  <span class="artist-year-label whitespace-nowrap"></span>
+  <div class="grow h-1 rounded-full bg-linear-to-r from-[#03A6A1]/40 to-transparent"></div>
   </div>
+
 
       <div id="ArtistGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 items-stretch"></div>
     </div>
   </div>
 
-  <!-- Scroll-längden som gör att sektionen kan vara pinned en stund -->
-  <div id="ArtistPinSpacer" aria-hidden="true"></div>
 </section>
 
 
@@ -168,7 +165,7 @@
     </main>
    
     <script type="module" src="./src/js/mainAlex.js"></script>
-   <script type="module" src="./src/js/topartist.js"></script> 
+   <script type="module" src="./src/components/TopArtist.js"></script> 
     <script type="module" src="./src/components/SpotifySection.js"></script>
     
   </body>

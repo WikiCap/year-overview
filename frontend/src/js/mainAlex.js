@@ -1,32 +1,97 @@
 import { renderHighlights, renderMovies, renderSeries } from "../components/MediaSection.js";
+import { runTopArtist } from "../components/TopArtist.js";
 import { renderWikiSection } from "../components/WikiSection.js";
 
+/** Base URL for the backend API */
 const API_BASE = "http://127.0.0.1:8000";
 
+/** The form used to submit a year for lookup 
+ * @type {HTMLFormElement}
+ */
 const form = document.querySelector("#yearForm");
+
+/** Input field where the user enters a year
+ * @type {HTMLInputElement}
+ */
 const input = document.querySelector("#yearInput");
+
+/** Element used to display loading or status messages 
+ * @type {HTMLElement}
+*/
 const statusEl = document.querySelector("#status");
+
+/** Container for all generated results.
+ * @type {HTMLElement}
+ */
 const resultsEl = document.querySelector("#results");
 
-const entertainmentSection = document.querySelector("#entertainmentSection");
+/** Section showing the year's highlights.
+ * @type {HTMLElement}
+ */
 const highlightsSection = document.querySelector("#highlightsSection");
+
+/** Section containing movie results.
+ * @type {HTMLElement}
+ */
 const movieSection = document.querySelector("#movieSection");
+
+/** Section containing series results.
+ * @type {HTMLElement}
+ */
 const seriesSection = document.querySelector("#seriesSection");
 
+/** Template element for Wikipedia-style cards.
+ * @type {HTMLTemplateElement}
+ */
 const wikiTpl = document.querySelector("#wikiCardTpl");
+
+/** Main hero text element at the top of the page.
+ * @type {HTMLElement}
+ */
 const heroText = document.querySelector("#heroText");
+
+/** Alias for the wiki card template.
+ * @type {HTMLTemplateElement}
+ */
 const tpl = wikiTpl;
 
-
+/** Header element for the recap section.
+ * @type {HTMLElement}
+ */
 const recapHeader = document.querySelector("#recapHeader");
+
+/** Badge displaying tyhe selected year. 
+ * @type {HTMLElement}
+ */
 const yearBadge = document.querySelector("#yearBadge");
+
+/** Submit button for triggering the year lookup.
+ * @type {HTMLButtonElement}
+ */
 const submitBtn = document.querySelector("#submitBtn");
+
+/** Section containing artist-related content.
+ * @type {HTMLElement}
+ */
+const entertainmentSection = document.querySelector("#entertainmentSection");
+
+
+
+
 
 const nobelSection = document.querySelector("#nobelSection");
 const nobelGrid = document.querySelector("#nobelGrid");
 const nobelTpl = document.querySelector("#nobelCardTpl");
 const statsEl = document.querySelector("#nobelStats");
 
+/** IntersectionObserver that reveals elements,
+ *  when they become visible on the screen. 
+ *  
+ * When at least 15% of an element is in view,
+ * the observer removes the "hidden" classes and adds a "visible" class.
+ * After an element has been revealed, it is no longer observed.
+ *
+ * This makes sure each element only animates once when the user scrolls. */
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
@@ -153,6 +218,13 @@ function setStatus(text, kind = "info") {
   statusEl.appendChild(span);
 }
 
+/**
+ * Clears all result sections from the page.
+ *
+ * Empties the main results area, highlights, movie and series sections,
+ * hides the recap header, and resets the year badge. Used before rendering
+ * new data to ensure the UI starts from a clean state.
+ */
 function clearResults() {
   resultsEl.innerHTML = "";
   highlightsSection.innerHTML = "";
@@ -162,6 +234,23 @@ function clearResults() {
   yearBadge.textContent = "";
 }
 
+/**
+ * Renders a single month card and adds it to the results section.
+ *
+ * The card is cloned from a template, styled based on its index
+ * (alternating left/right reveal animations), and filled with the
+ * month title and its list of events. Each event becomes a list item.
+ *
+ * A small transition delay is applied based on the card’s position
+ * to create a staggered reveal effect. The card is then observed by
+ * the IntersectionObserver so it animates when scrolled into view.
+ *
+ * @param {Object} params - Data used to build the month card.
+ * @param {string} params.month - The month name (e.g., "January").
+ * @param {number} params.year - The year the month belongs to.
+ * @param {string[]} params.events - List of event descriptions.
+ * @param {number} params.index - Position of the card in the sequence.
+ */
 function renderMonthCard({ month, year, events, index }) {
   const node = tpl.content.firstElementChild.cloneNode(true);
 
@@ -195,6 +284,18 @@ function renderMonthCard({ month, year, events, index }) {
   observer.observe(card);
 }
 
+
+/**
+ * Fetches all data for a given year from the API.
+ *
+ * Builds the request URL, sends the fetch call, and returns the parsed
+ * JSON response. If the server responds with a non‑OK status, the function
+ * throws an error so the caller can handle it.
+ *
+ * @param {number|string} year - The year to request data for.
+ * @returns {Promise<Object>} The parsed year data from the API.
+ * @throws {Error} If the API responds with a non‑OK status.
+ */
 async function fetchYear(year) {
   const url = `${API_BASE}/api/v1/year/${encodeURIComponent(year)}`;
 
@@ -229,6 +330,12 @@ form.addEventListener("submit", async (e) => {
     console.error(err);
     setStatus("Kunde inte hämta Nobel-data.", "error");
     clearNobel();
+  }
+
+  try {
+    await runTopArtist(year);
+  } catch (err) {
+    console.error("TopArtist failed:", err);
   }
 
   try {
