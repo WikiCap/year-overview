@@ -87,7 +87,7 @@ const ArtistTpl = document.querySelector("#ArtistCardTpl");
 /** Element displaying statistics for the selected year.
  * @type {HTMLElement}
  */
-const statsEl = document.querySelector("#stats");
+const statsEl = document.querySelector("#ArtistStats");
 
 /** Cleanup function for the auto-reveal animation of artist cards.
  * If this variable holds a function (not null), calling it will stop the animation.
@@ -218,6 +218,9 @@ async function renderTopArtist(artistData, year) {
 
   ArtistSection.classList.remove("hidden");
 
+  const yearLabel = ArtistSection.querySelector(".artist-year-label");
+  if (yearLabel) yearLabel.textContent = year;
+
   let topTracksByArtist = new Map();
   try {
     const topSongsData = await fetchBillboardTopSong(year, 5);
@@ -299,11 +302,11 @@ async function renderTopArtist(artistData, year) {
     durationMs: 1200
   });
 
-  requestAnimationFrame(() => {
-    const position = ArtistSection.getBoundingClientRect().top + window.scrollY;
-    const offset = 220;
-    window.scrollTo({ top: position - offset, behavior: "smooth" });
-  });
+  // requestAnimationFrame(() => {
+  //   const position = ArtistSection.getBoundingClientRect().top + window.scrollY;
+  //   const offset = 220;
+  //   window.scrollTo({ top: position - offset, behavior: "smooth" });
+  // });
 }
 
   /** Fetches the top songs for a given year from the Billboard API.
@@ -512,8 +515,6 @@ form.addEventListener("submit", async (e) => {
 
     console.log(ArtistData);
     
-     // Update hero text
-      heroText.textContent = `Top artists of the year ${year}`
 
     setStatus("");
   } catch (err) {

@@ -21,7 +21,7 @@ const submitBtn = document.querySelector("#submitBtn");
 const nobelSection = document.querySelector("#nobelSection");
 const nobelGrid = document.querySelector("#nobelGrid");
 const nobelTpl = document.querySelector("#nobelCardTpl");
-const statsEl = document.querySelector("#stats");
+const statsEl = document.querySelector("#nobelStats");
 
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {

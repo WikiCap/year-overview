@@ -48,11 +48,45 @@
           </div>
         </div>
       </template>
-<<<<<<< Updated upstream
-=======
 
       <!-- Top Artister för givet år del -->
-      
+      <template id="ArtistCardTpl">
+        <div class="component-card shadow-glass-warm hover-lift flex flex-col gap-3">
+          <div class="flex gap-4 items-start">
+          <img class="w-16 h-16 rounded-2xl object-cover border border-slate-900/10" />
+          <div class="text-left space-y-1">
+            <p class="font-semibold text-slate-900 name"></p>
+            <p class="text-xs text-slate-500 song"></p>
+            <p class="text-sm text-slate-700 motivation"></p>
+          </div>
+        </div>
+
+        <div class="songs"></div>
+      </div>
+      </template>
+
+    <section id="ArtistSection" class="hidden relative">
+  <!-- Sticky viewport -->
+  <div class="sticky top-0 h-screen flex items-start pt-8">
+    <div class="mx-auto w-full max-w-9xl px-4">
+      <div class="flex items-center justify-between mb-6">
+        <p class="section-label">Artist of the year</p>
+        <span id="artistStats" class="hidden">Top Artist</span>
+      </div>
+
+  <div class="artist-card-label">
+    <p class="top-artist-label">Top Artist of the year:</p>
+    <p class="artist-year-label"></p>
+    <div class="artist-divider"></div>
+  </div>
+
+      <div id="ArtistGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 items-stretch"></div>
+    </div>
+  </div>
+
+  <!-- Scroll-längden som gör att sektionen kan vara pinned en stund -->
+  <div id="ArtistPinSpacer" aria-hidden="true"></div>
+</section>
 
 
       <!-- Spotify låtar del -->
@@ -83,14 +117,13 @@
 
       </template>
         <div id="spotifyGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-      </section>
->>>>>>> Stashed changes
     </section>
+
       <!-- Nobel prize del -->
       <section class="hidden space-y-6 pt-10" id="nobelSection">
         <div class="flex items-center justify-between">
           <p class="section-label">Nobel Price Winners Of The Year</p>
-          <span id="stats">Nobel Prize</span>
+          <span id="nobelStats">Nobel Prize</span>
         </div>
 
         <div id="nobelGrid" class="nobel-grid"></div>
@@ -113,5 +146,6 @@
       </section>
     </main>
     <script type="module" src="./src/js/mainAlex.js"></script>
+   <script type="module" src="./src/js/topartist.js"></script> 
   </body>
 </html>

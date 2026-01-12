@@ -5,6 +5,7 @@ from app.services.movie_service import fetch_movies_for_year
 from app.services.wiki_service import fetch_year_summary
 from app.services.artist_of_the_year import get_artist_of_the_year
 from app.services.hit_song_year import get_year_with_hit_songs
+from app.services.movie_service import fetch_series_for_year
 
 router = APIRouter()
 
