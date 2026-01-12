@@ -407,6 +407,87 @@ components:
         title: 
           type: string
           example: "Purple rain"
-      required: [artist, toptracks]        
+      required: [artist, toptracks]
 
+  /api/v1/year/{year}/songs:
+    get:
+      summary: Get popular songs for a specific year from Spotify
+      description: Returns popular songs for the specified year, ranked by popularity from Spotify
+        and based on limit how many songs to retrieve.
+      tags:
+        - Songs
+      parameters:
+        - name: year
+          in: path
+          required: true
+          description: The year to retrieve songs for
+          schema:
+            type: integer
+            minimum: 1900
+            maximum: 2026
+          example: 1987
+      responses:
+        '200':
+          description: Top songs successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SongsResponse'
+        '400':
+          description: Invalid year parameter
+        '404':
+          description: No songs found for the specified year
+        '500':
+          description: Internal server error
+        '502':
+          description: Bad gateway error when accessing Spotify
+        '503':
+          description: Spotify service is currently unavailable. Please try again later.
 
+  components:
+    SongsResponse:
+      type: object
+      properties:
+        year:
+          type: integer
+          description: The requested year
+          example: 1987
+        topSongs:
+          type: array
+          description: List of popular songs for the year
+          items:
+            $ref: '#/components/schemas/Song'
+        source:
+          type: string
+          description: Data source
+          example: Spotify
+    Song:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the song
+          example: 'In the end'
+        artist:
+          type: string
+          description: Artist name
+          example: 'Linkin Park'
+        album:
+          type: string
+          description: Album name
+          example: 'Hybrid Theory (Bonus Edition)'
+        releaseDate:
+          type: string
+          format: date
+          description: Release date
+          example: '2000-10-24'
+        spotifyUrl:
+          type: string
+          format: uri
+          description: URL to the song on Spotify
+          example: 'https://open.spotify.com/track/xyz...'
+        image:
+          type: string
+          format: uri
+          description: URL to the album cover image
+          example: 'https://i.scdn.co/image/abc123...'
