@@ -207,7 +207,7 @@ form.addEventListener("submit", async (e) => {
 
   clearNobel();
   clearResults();
-  setStatus("Fetching data...", "loading");
+  setStatus("", "loading");
   submitBtn.disabled = true;
   submitBtn.classList.add("opacity-70", "cursor-not-allowed");
 
