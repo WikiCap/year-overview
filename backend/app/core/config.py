@@ -9,7 +9,6 @@ LASTFM_API_KEY=os.getenv("LASTFM_API_KEY")
 SPOTIFY_CLIENT_ID=os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET=os.getenv("SPOTIFY_CLIENT_SECRET")
 
-
 if not TMDB_API_KEY:
     raise RuntimeError("TMDB_API_KEY is missing in the environment")
 
