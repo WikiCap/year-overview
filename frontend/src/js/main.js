@@ -1,100 +1,32 @@
-import { renderHighlights, renderMovies, renderSeries } from "../components/MediaSection.js";
-import { runTopArtist } from "../components/TopArtist.js";
-import { renderWikiSection } from "../components/WikiSection.js";
+import { renderHighlights, renderMovies, renderSeries } from "./components/MediaSection.js";
+import { runTopArtist } from "./components/TopArtist.js";
+import { renderWikiSection } from "./components/WikiSection.js";
 import { renderNobel, clearNobel } from "./components/NobelSection.js";
 
 /** Base URL for the backend API */
 const API_BASE = "http://127.0.0.1:8000";
 
-/** The form used to submit a year for lookup 
- * @type {HTMLFormElement}
- */
-const form = document.querySelector("#yearForm");
+const form = document.querySelector("#yearForm"); // Form element for year input
+const input = document.querySelector("#yearInput"); // Input field for year input
+const statusEl = document.querySelector("#status"); // Status display element
+const resultsEl = document.querySelector("#results"); // Main results area
 
-/** Input field where the user enters a year
- * @type {HTMLInputElement}
- */
-const input = document.querySelector("#yearInput");
+const entertainmentSection = document.querySelector("#entertainmentSection"); // Entertainment section container
+const highlightsSection = document.querySelector("#highlightsSection"); // Movie highlights section container
+const movieSection = document.querySelector("#movieSection"); // Movie section container
+const seriesSection = document.querySelector("#seriesSection"); // Series section container
 
-/** Element used to display loading or status messages 
- * @type {HTMLElement}
-*/
-const statusEl = document.querySelector("#status");
+const wikiTpl = document.querySelector("#wikiCardTpl"); // Template for rendering wiki cards
+const heroText = document.querySelector("#heroText"); // Hero text element
 
-/** Container for all generated results.
- * @type {HTMLElement}
- */
-const resultsEl = document.querySelector("#results");
+const recapHeader = document.querySelector("#recapHeader"); // Recap header element
+const yearBadge = document.querySelector("#yearBadge"); // Year badge element
+const submitBtn = document.querySelector("#submitBtn"); // Submit button
 
-/** Section showing the year's highlights.
- * @type {HTMLElement}
- */
-const highlightsSection = document.querySelector("#highlightsSection");
-
-/** Section containing movie results.
- * @type {HTMLElement}
- */
-const movieSection = document.querySelector("#movieSection");
-
-/** Section containing series results.
- * @type {HTMLElement}
- */
-const seriesSection = document.querySelector("#seriesSection");
-
-/** Template element for Wikipedia-style cards.
- * @type {HTMLTemplateElement}
- */
-const wikiTpl = document.querySelector("#wikiCardTpl");
-
-/** Main hero text element at the top of the page.
- * @type {HTMLElement}
- */
-const heroText = document.querySelector("#heroText");
-
-/** Alias for the wiki card template.
- * @type {HTMLTemplateElement}
- */
-const tpl = wikiTpl;
-
-/** Header element for the recap section.
- * @type {HTMLElement}
- */
-const recapHeader = document.querySelector("#recapHeader");
-
-/** Badge displaying tyhe selected year. 
- * @type {HTMLElement}
- */
-const yearBadge = document.querySelector("#yearBadge");
-
-/** Submit button for triggering the year lookup.
- * @type {HTMLButtonElement}
- */
-const submitBtn = document.querySelector("#submitBtn");
-
-/** Section containing artist-related content.
- * @type {HTMLElement}
- */
-const entertainmentSection = document.querySelector("#entertainmentSection");
-
-/** Section containing Nobel Prize-related content.
- * @type {HTMLElement}
- */
-const nobelSection = document.querySelector("#nobelSection");
-
-/** Grid container where Nobel winner cards are rendered.
- * @type {HTMLElement}
- */
-const nobelGrid = document.querySelector("#nobelGrid");
-
-/** Template used for cloning individual Nobel winner cards.
- * @type {HTMLTemplateElement}
- */
-const nobelTpl = document.querySelector("#nobelSection template#nobelCardTpl");
-
-/** Element displaying statistics or status messages for the Nobel section.
- * @type {HTMLElement}
- */
-const statsEl = document.querySelector("#stats");
+const nobelSection = document.querySelector("#nobelSection"); // Nobel prize section container
+const nobelGrid = document.querySelector("#nobelGrid"); // Nobel prize grid container
+const nobelTpl = document.querySelector("#nobelSection template#nobelCardTpl"); // Template for rendering nobel prize cards
+const statsEl = document.querySelector("#stats"); // Stats element
 
 /** IntersectionObserver that reveals elements,
  *  when they become visible on the screen. 
@@ -117,94 +49,13 @@ const observer = new IntersectionObserver(entries => {
 
     entry.target.classList.add("is-visible");
 
-
     observer.unobserve(entry.target);
   });
-},
+  },
 {  threshold: 0.15}
-
-    );
+);
   
   /**
- * Clears all Nobel‑related content from the page.
- *
- * - Empties the grid that displays Nobel results.
- * - Hides the Nobel section so it’s not visible to the user.
- * - Resets the statistics element by removing any previous text.
- */
-  function clearNobel() {
-  if (nobelGrid) nobelGrid.innerHTML = "";
-  if (nobelSection) nobelSection.classList.add("hidden");
-  if (statsEl) statsEl.textContent = "";
-}
-/**
- * Renders a list of Nobel Prize winners into the UI.
- *
- * - Clears any previously displayed Nobel content.
- * - Transforms the incoming `nobelData` object into a flat list of winners.
- * - Reveals the Nobel section and inserts one card per winner using a template.
- * - Applies left/right reveal animations based on each card’s index.
- * - Fills each card with the winner’s name, category, motivation, and image
- *   (falling back to a default Nobel medal image when needed).
- * - Observes each card with an IntersectionObserver to trigger animations.
- *
- * The function exits early if required DOM elements or data are missing.
- */
-  function renderNobel(nobelData) {
-    clearNobel();
-
-
-    if (!nobelData || !nobelTpl || !nobelGrid || !nobelSection) return;
-
-    const winners = Object.entries(nobelData).flatMap(
-      ([category, people]) =>
-        people.map(p => ({...p, category}))
-    );
-
-    if (winners.length === 0) return;
-
-    nobelSection.classList.remove("hidden");
-
-    winners.forEach((winner, index) => {
-      const node = nobelTpl.content.firstElementChild.cloneNode(true);
-
-
-      const isLeft = index % 2 === 0;
-      node.classList.add("reveal",
-        "opacity-0",
-        "transition-all",
-        "duration-700",
-        "ease-out",
-        "blur-sm",
-        isLeft ? "-translate-x-10" : "translate-x-10"
-      );
-
-      node.dataset.reveal = isLeft ? "left" : "right";
-
-      const img = node.querySelector("img");
-      const nameEl = node.querySelector(".name");
-      const categoryEl = node.querySelector(".category");
-      const motivationEl = node.querySelector(".motivation");
-
-      nameEl.textContent = winner.name ?? "Unknown";
-      categoryEl.textContent = winner.category ?? "Unknown Category";
-      motivationEl.textContent = winner.motivation ?? "";
-
-      const imgUrl = winner.image || "";
-      if (imgUrl) {
-        img.src = imgUrl;
-        img.alt = `Portrait of ${winner.name}`;
-      } else {
-        img.src = "https://upload.wikimedia.org/wikipedia/en/e/ed/Nobel_Prize.png";
-        img.alt = "Nobel Prize Medal";
-      }
-      nobelGrid.appendChild(node);
-      observer.observe(node);
-    });
-  }
-
-
-/**
  * Updates the status area with a message or a loading indicator.
  *
  * - Resets the status element before displaying new content.
@@ -270,56 +121,6 @@ function clearResults() {
 }
 
 /**
- * Renders a single month card and adds it to the results section.
- *
- * The card is cloned from a template, styled based on its index
- * (alternating left/right reveal animations), and filled with the
- * month title and its list of events. Each event becomes a list item.
- *
- * A small transition delay is applied based on the card’s position
- * to create a staggered reveal effect. The card is then observed by
- * the IntersectionObserver so it animates when scrolled into view.
- *
- * @param {Object} params - Data used to build the month card.
- * @param {string} params.month - The month name (e.g., "January").
- * @param {number} params.year - The year the month belongs to.
- * @param {string[]} params.events - List of event descriptions.
- * @param {number} params.index - Position of the card in the sequence.
- */
-function renderMonthCard({ month, year, events, index }) {
-  const node = tpl.content.firstElementChild.cloneNode(true);
-
-  const isOdd = index % 2 === 0;
-  node.classList.add(isOdd ? "justify-start" : "justify-end");
-
-  const card = node.querySelector(".component-card");
-
-  card.classList.add(isOdd ? "reveal-left" : "reveal-right");
-
-  card.style.transitionDelay = `${index * 80}ms`;
-  card.dataset.reveal = isOdd ? "left" : "right";
-
-  const title = node.querySelector(".monthTitle");
-  const list = node.querySelector(".monthList");
-
-  title.textContent = `${month} ${year}`;
-  title.classList.add(isOdd ? "text-amber-200" : "text-amber-400");
-
-
-
-  for (const e of events) {
-    const li = document.createElement("li");
-    li.textContent = `• ${e}`;
-    li.className = "leading-relaxed";
-    list.appendChild(li);
-  }
-
-  resultsEl.appendChild(node);
-  observer.observe(card);
-}
-
-
-/**
  * Fetches all data for a given year from the API.
  *
  * Builds the request URL, sends the fetch call, and returns the parsed
@@ -367,7 +168,7 @@ form.addEventListener("submit", async (e) => {
     if (data?.nobel_prizes) {
       renderNobel(
         data.nobel_prizes,
-        { nobelSection, nobelGrid, nobelTpl, statsEl },
+        { nobelSection, nobelGrid, nobelTpl, statsEl},
         observer
       );
     }
@@ -396,7 +197,7 @@ form.addEventListener("submit", async (e) => {
 
       highlightsSection.innerHTML = renderHighlights(data.movie_highlights, year);
       movieSection.innerHTML = renderMovies(listSorter(data.movies.top_movies, "rating"));
-      seriesSection.innerHTML = renderSeries(listSorter(data.series.top_series, "rating"));
+      seriesSection.innerHTML = renderSeries(listSorter(data.series.top_series, "rating"), year);
 
       setTimeout(() => {
         const movieCards = movieSection.querySelectorAll('.movie-card.reveal');

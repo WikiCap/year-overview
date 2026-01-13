@@ -1,3 +1,9 @@
+/**
+ * Formats a number of votes into a human-readable string (e.g., 1.2M, 45.3K).
+ * 
+ * @param {number} votes - The number of votes to format.
+ * @returns {string|number} The formatted vote count as a string, or the original number if less than 1000.
+ */
 function formatVotes(votes) {
   if (votes >= 1000000) {
     return (votes / 1000000).toFixed(1) + 'M';
@@ -8,6 +14,17 @@ function formatVotes(votes) {
   return votes;
 }
 
+/**
+ * Renders the awards and honors section (Oscars) for a specific year.
+ * 
+ * @param {Object} highlights - Object containing Oscar award data.
+ * @param {Object} highlights.oscars - Oscar specific data.
+ * @param {Object} highlights.oscars.bestPicture - Data for Best Picture.
+ * @param {Object} highlights.oscars.bestActor - Data for Best Actor.
+ * @param {Object} highlights.oscars.bestActress - Data for Best Actress.
+ * @param {string|number} year - The year to display in the header.
+ * @returns {string} HTML string representing the highlights section.
+ */
 export function renderHighlights(highlights, year) {
     /*
     Storlekar för posters. Mer info på tmbd
@@ -93,6 +110,17 @@ export function renderHighlights(highlights, year) {
     `;
 }
 
+/**
+ * Renders a grid of movies.
+ * 
+ * @param {Array<Object>} movies - Array of movie objects.
+ * @param {string} movies[].title - Movie title.
+ * @param {string} movies[].poster - Movie poster path.
+ * @param {number} movies[].rating - Movie rating.
+ * @param {string} movies[].release_date - Movie release date string.
+ * @param {number} movies[].votes - Number of votes.
+ * @returns {string} HTML string representing the top movies section.
+ */
 export function renderMovies(movies) {
     const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w342';
 
@@ -108,6 +136,7 @@ export function renderMovies(movies) {
           const isLeft = index % 2 === 0;
           return `
           <div class="movie-card reveal opacity-0 transition-all duration-700 ease-out blur-sm ${isLeft ? '-translate-x-10' : 'translate-x-10'}" data-reveal="${isLeft ? 'left' : 'right'}">
+            <div class="movie-card-badge">Released</div>
             ${movie.poster ? `
               <div class="movie-card-poster-wrapper">
                 <img 
@@ -119,13 +148,13 @@ export function renderMovies(movies) {
               </div>
             ` : '<div class="movie-card-poster-placeholder"></div>'}
             <div class="movie-card-content">
-              <div class="flex items-start justify-between gap-2 mb-2">
+              <div class="flex items-start justify-between gap-2 mb-1">
                 <h3 class="movie-card-title flex-1">${movie.title}</h3>
                 <div class="movie-card-votes-wrapper">
                   <p class="movie-card-rating">${movie.rating}</p>
                 </div>
               </div>
-              <div class="flex items-start justify-between gap-2 mb-2">
+              <div class="flex items-center justify-between gap-2">
                 <p class="movie-card-date">${new Date(movie.release_date).toLocaleDateString('en-EN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 <p class="movie-card-votes">${formatVotes(movie.votes)} votes</p>
               </div>
@@ -137,7 +166,19 @@ export function renderMovies(movies) {
   `;
 }
 
-export function renderSeries(series) {
+/**
+ * Renders a grid of TV series.
+ * 
+ * @param {Array<Object>} series - Array of series objects.
+ * @param {string} series[].title - Series title.
+ * @param {string} series[].poster - Series poster path.
+ * @param {number} series[].rating - Series rating.
+ * @param {string} series[].release_date - Series release date (first air date).
+ * @param {number} series[].votes - Number of votes.
+ * @param {number} year - The year being displayed.
+ * @returns {string} HTML string representing the top series section.
+ */
+export function renderSeries(series, year) {
   const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w342';
 
   return `
@@ -150,8 +191,12 @@ export function renderSeries(series) {
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
         ${series.map((serie, index) => {
           const isLeft = index % 2 === 0;
+          const releaseYear = new Date(serie.release_date).getFullYear();
+          const releaseText = releaseYear === Number(year) ? 'First released' : `New season ${year}`;
+
           return `
           <div class="series-card reveal opacity-0 transition-all duration-700 ease-out blur-sm ${isLeft ? '-translate-x-10' : 'translate-x-10'}" data-reveal="${isLeft ? 'left' : 'right'}">
+            <div class="series-card-badge">${releaseText}</div>
             ${serie.poster ? `
               <div class="series-card-poster-wrapper">
                 <img 
@@ -163,13 +208,13 @@ export function renderSeries(series) {
               </div>
             ` : '<div class="series-card-poster-placeholder"></div>'}
             <div class="series-card-content">
-              <div class="flex items-start justify-between gap-2 mb-2">
+              <div class="flex items-start justify-between gap-2 mb-1">
                 <div class="series-card-votes-wrapper">
                   <p class="series-card-rating text-right">${serie.rating}</p>
                 </div>
                 <h3 class="series-card-title flex-1 text-right">${serie.title}</h3>
               </div>
-              <div class="flex items-start justify-between gap-2 mb-2">
+              <div class="flex items-center justify-between gap-2">
                 <p class="series-card-votes">${formatVotes(serie.votes)} votes</p>
                 <p class="series-card-date text-right">${new Date(serie.release_date).toLocaleDateString('en-EN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
               </div>
