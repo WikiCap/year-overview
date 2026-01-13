@@ -1,0 +1,12 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npx @tailwindcss/cli -i ./src/css/input.css -o ./public/output.css --watch",
+    "build": "npx @tailwindcss/cli -i ./src/css/input.css -o ./public/output.css --minify",
+    "dev:css": "tailwindcss -i frontend/src/css/input.css -o frontend/dist/output.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "4.1.17"
+  }
+}
