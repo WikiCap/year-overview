@@ -8,6 +8,11 @@ from app.services.wiki_service import fetch_year_events
 def test_fetch_year_events(year: int = 1997):
     """
     Test the fetch_year_events function with a specific year.
+    
+    Parameters
+    ----------
+        year: int
+          The year to fetch events for. Defaults to 1997  
     """
     print(f"Fetching events for year {year}...\n")
 
